@@ -31,13 +31,74 @@
  * @module matchboxchip8
  */
 var MatchboxChip8 = (function () {
+    function dissassembleRom(rom) {
+
+    }
+
     /**
      * Matchbox interpreter
      * @constructor
+     * @param {CanvasRenderingContext2D} context - The 2D canvas drawing
+     *     context used to draw the screen for the VM.
      */
-    var MatchBoxChip8 = function () {
+    var MatchboxVM = function (context) {
+        this.drawingContext = context;
 
+        /*
+         * 4KB of internal memory
+         * 0x000 -> 0x1FF: Reserved
+         * 0x200 -> 0xFFF: Space for program logic/data
+         */
+        this.RAM = new Array(4096);
+
+        // 16 8-bit general purpose registers
+        this.registers = {
+            V0: 0,
+            V1: 0,
+            V2: 0,
+            V3: 0,
+            V4: 0,
+            V5: 0,
+            V6: 0,
+            V7: 0,
+            V8: 0,
+            V9: 0,
+            VA: 0,
+            VB: 0,
+            VC: 0,
+            VD: 0,
+            VE: 0,
+            VF: 0,
+        }
+
+        // Single 32-bit register
+        this.I = 0;
+
+        // Delay timer - When > 0, decreases by one at a rate of 60HZ
+        this.DT = 0;
+
+        /*
+         *  Sound timer
+         *   - When > 0, decreases by one at a rate of 60HZ
+         *   - When > 0, sound plays
+         */
+        this.ST = 0;
+
+        /*
+         * The program counter
+         *  - Contains the memory address of the next instrution to be 
+         *    executed.
+         */
+        this.PC = 0;
+
+        // The stack pointer
+        this.SP = 0;
+
+        // The stack - contains 16 16bit values
+        this.stack = new Array(16);
     };
 
-    return MatchboxChip8;
+    return {
+        MatchboxVM: MatchboxVM,
+    };
 }());

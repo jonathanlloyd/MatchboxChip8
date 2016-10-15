@@ -41,7 +41,7 @@ var MatchboxChip8 = (function () {
      * @param {CanvasRenderingContext2D} context - The 2D canvas drawing
      *     context used to draw the screen for the VM.
      */
-    var MatchboxVM = function (context) {
+    var Interpreter = function (context) {
         this.drawingContext = context;
 
         /*
@@ -98,7 +98,11 @@ var MatchboxChip8 = (function () {
         this.stack = new Array(16);
     };
 
+    Interpreter.prototype.insertRom = function(instructionList) {
+        console.log(instructionList[0]);
+    };
+
     return {
-        MatchboxVM: MatchboxVM,
+        Interpreter: Interpreter,
     };
 }());

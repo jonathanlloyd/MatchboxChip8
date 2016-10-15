@@ -11,11 +11,44 @@
   <![endif]-->
 </head>
 <body>
-  <canvas id="stage">
+  <h1>Matchbox Chip 8 Interpreter</h1>
+  <canvas id="stage" width="640px" height="320px" style="border: 1px solid black;">
   </canvas>
+  <input type="file" id="input" onchange="romUploaded(this.files)">
+  <script src="//jdataview.github.io/dist/jdataview.js"></script>
+  <script src="//jdataview.github.io/dist/jbinary.js"></script>
   <script src="MatchboxChip8.js"></script>
   <script>
-    
+    var drawingContext = document.getElementById("stage").getContext("2d");
+    var interpreter = new MatchboxChip8.Interpreter(drawingContext);
+
+    var typeSet = {
+      "jBinary.all": ['array', 'uint16'],
+    }
+
+    function romUploaded(romFiles) {
+      drawingContext.fillText('Loading...', 10, 310);
+
+      var romFile = romFiles[0];
+
+      jBinary.load(romFile, typeSet, function (err, binary) {
+        var intList = binary.readAll();
+        var instructions = new Array(intList.length);
+
+        for(var index = 0; index < intList.length; index += 1) {
+          instructions[index] = intList[index].toString(16);
+        }
+
+        interpreter.insertRom(instructions);
+        drawingContext.clearRect(0, 0, 640, 320);
+        drawingContext.fillText(
+          'Loaded ' + instructions.length + ' instructions',
+          10,
+          310
+        );
+      });
+
+    }
   </script>
 </body>
 </html>

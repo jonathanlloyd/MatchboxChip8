@@ -31,8 +31,16 @@
  * @module matchboxchip8
  */
 var MatchboxChip8 = (function () {
-    function dissassembleRom(rom) {
+    var INSTRUCTIONS = {
+        "^F.65$": function(interpreter, x) {
+            return function() {
+                interpreter.ldvxi(x);
+            }
+        }
+    };
 
+    function dissassembleRom(rom) {
+        console.log(rom[0]);
     }
 
     /**
@@ -69,7 +77,7 @@ var MatchboxChip8 = (function () {
             VD: 0,
             VE: 0,
             VF: 0,
-        }
+        };
 
         // Single 32-bit register
         this.I = 0;
@@ -98,8 +106,18 @@ var MatchboxChip8 = (function () {
         this.stack = new Array(16);
     };
 
-    Interpreter.prototype.insertRom = function(instructionList) {
-        console.log(instructionList[0]);
+    Interpreter.prototype.insertRom = function (rom) {
+        var instructions = dissassembleRom(rom);
+    };
+
+    Interpreter.prototype.step = function() {
+        // Fetch instruction
+        var rawInstruction = this.RAM[this.PC];
+        // Decode instruction
+        var decodedInstruction = this.decodeInstruction(rawInstruction);
+        // Execute instruction
+        var interpreterMethod = this[decodedInstruction['instructionName']];
+        interpreterMethod(decodedInstruction['parameters']);
     };
 
     return {

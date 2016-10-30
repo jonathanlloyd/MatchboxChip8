@@ -51,6 +51,13 @@ var INSTRUCTION_MAP = {
         return function () {
             interpreter.jump(jumpAddress);
         }
+    },
+    "^2(...)$": function (interpreter, matchResult) {
+        var callAddress = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.call(callAddress);
+        }
     }
 };
 
@@ -155,7 +162,7 @@ Interpreter.prototype.reset = function () {
     this.PC = PROGRAM_ADDRESS;
 
     // Reset stack pointer
-    this.SP = 0;
+    this.SP = -1;
 
     // Reset stack
     for(i = 0; i < this.stack.length; i += 1) {
@@ -237,6 +244,17 @@ Interpreter.prototype.setPixel = function (x, y, value) {
     return this.display[(64 * y) + x] = value;
 }
 
+Interpreter.prototype.pushStack = function (value) {
+    this.SP += 1;
+    this.stack[this.SP] = value;
+}
+
+Interpreter.prototype.popStack = function () {
+    value = this.stack[this.SP];
+    this.SP -= 1;
+    return value;
+}
+
 Interpreter.prototype.clearDisplay = function () {
     console.log("Clearing display");
     for(var i = 0; i < this.display.length; i += 1) {
@@ -246,11 +264,18 @@ Interpreter.prototype.clearDisplay = function () {
 
 Interpreter.prototype.subroutineReturn = function () {
     console.log("Returning from subroutine");
+    this.PC = this.popStack();
 }
 
 Interpreter.prototype.jump = function (jumpAddress) {
     console.log("Jumping to 0x" + jumpAddress.toString(16));
     this.PC = jumpAddress - 1;
+}
+
+Interpreter.prototype.call = function (callAddress) {
+    console.log("Calling subroutine at 0x" + callAddress.toString(16));
+    this.pushStack(this.PC);
+    this.PC = callAddress;
 }
 
 

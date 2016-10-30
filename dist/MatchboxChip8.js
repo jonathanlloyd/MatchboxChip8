@@ -98,6 +98,13 @@ var MatchboxChip8 =
 	        return function () {
 	            interpreter.jump(jumpAddress);
 	        }
+	    },
+	    "^2(...)$": function (interpreter, matchResult) {
+	        var callAddress = parseInt(matchResult[1], 16);
+
+	        return function () {
+	            interpreter.call(callAddress);
+	        }
 	    }
 	};
 
@@ -202,7 +209,7 @@ var MatchboxChip8 =
 	    this.PC = PROGRAM_ADDRESS;
 
 	    // Reset stack pointer
-	    this.SP = 0;
+	    this.SP = -1;
 
 	    // Reset stack
 	    for(i = 0; i < this.stack.length; i += 1) {
@@ -284,6 +291,17 @@ var MatchboxChip8 =
 	    return this.display[(64 * y) + x] = value;
 	}
 
+	Interpreter.prototype.pushStack = function (value) {
+	    this.SP += 1;
+	    this.stack[this.SP] = value;
+	}
+
+	Interpreter.prototype.popStack = function () {
+	    value = this.stack[this.SP];
+	    this.SP -= 1;
+	    return value;
+	}
+
 	Interpreter.prototype.clearDisplay = function () {
 	    console.log("Clearing display");
 	    for(var i = 0; i < this.display.length; i += 1) {
@@ -293,6 +311,7 @@ var MatchboxChip8 =
 
 	Interpreter.prototype.subroutineReturn = function () {
 	    console.log("Returning from subroutine");
+	    this.PC = this.popStack();
 	}
 
 	Interpreter.prototype.jump = function (jumpAddress) {
@@ -300,10 +319,16 @@ var MatchboxChip8 =
 	    this.PC = jumpAddress - 1;
 	}
 
+	Interpreter.prototype.call = function (callAddress) {
+	    console.log("Calling subroutine at 0x" + callAddress.toString(16));
+	    this.pushStack(this.PC);
+	    this.PC = callAddress;
+	}
+
 
 	module.exports = {
 	    Interpreter: Interpreter,
-	}
+	};
 
 
 /***/ },
@@ -357,7 +382,7 @@ var MatchboxChip8 =
 	module.exports = {
 	    disassemble: disassemble,
 	    instructionToHexString: instructionToHexString
-	}
+	};
 
 
 /***/ },

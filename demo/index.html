@@ -30,9 +30,11 @@
     var interpreter = new MatchboxChip8.Interpreter();
 
     var testProgram = [
-      0x00ee,
       0x00e0,
-      0x1200,
+      0x00e0,
+      0x00e0,
+      0x00e0,
+      0x2200,
     ];
     interpreter.loadInstructions(testProgram);
     interpreter.setPixel(0, 0, 1);

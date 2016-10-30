@@ -1,0 +1,22 @@
+{
+  "name": "matchboxchip8",
+  "version": "0.0.1",
+  "description": "JavaScript Chip-8 Interpreter",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/turingincomplete/MatchboxChip8.git"
+  },
+  "author": "Jonathan Lloyd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/turingincomplete/MatchboxChip8/issues"
+  },
+  "homepage": "https://github.com/turingincomplete/MatchboxChip8#readme",
+  "dependencies": {
+    "jbinary": "^2.1.3"
+  }
+}

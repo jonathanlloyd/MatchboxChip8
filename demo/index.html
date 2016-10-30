@@ -20,39 +20,19 @@
   <div>
     <a href="#" onclick="startRom('ROMS/BLINKY')">BLINKY</a>
   </div>
-  <script src="//jdataview.github.io/dist/jdataview.js"></script>
-  <script src="//jdataview.github.io/dist/jbinary.js"></script>
-  <script src="MatchboxChip8.js"></script>
+  <script src="../dist/MatchboxChip8.js"></script>
   <script>
     var drawingContext = document.getElementById("stage").getContext("2d");
     var interpreter = new MatchboxChip8.Interpreter(drawingContext);
 
-
-    var typeSet = {
-      "jBinary.all": ['array', 'uint16'],
-    }
-
-    function startRom(romResource) {
-      drawingContext.fillText('Loading...', 10, 310);
-      jBinary.load(romResource, typeSet, function (err, binary) {
-        var rom = binary.readAll();
-
-        interpreter.insertRom(rom);
-
-        drawingContext.clearRect(0, 0, 640, 320);
-        drawingContext.fillText(
-          'Loaded ' + rom.length + ' instructions',
-          10,
-          310
-        );
-      });
+    function startRom(rom) {
+      interpreter.insertRom(rom);
     }
 
     function romUploaded(romFiles) {
       var romFile = romFiles[0];
       startRom(romFile);
     }
-
   </script>
 </body>
 </html>

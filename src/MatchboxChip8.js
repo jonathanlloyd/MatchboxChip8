@@ -58,6 +58,14 @@ var INSTRUCTION_MAP = {
         return function () {
             interpreter.call(callAddress);
         }
+    },
+    "^3(.)(..)$": function (interpreter, matchResult) {
+        var registerNumber = parseInt(matchResult[1], 16);
+        var immediateValue = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.skipEqualImmediate(registerNumber, immediateValue);
+        }
     }
 };
 
@@ -79,24 +87,7 @@ var Interpreter = function () {
     this.RAM = new Array(4096);
 
     // 16 8-bit general purpose registers
-    this.registers = {
-        V0: 0,
-        V1: 0,
-        V2: 0,
-        V3: 0,
-        V4: 0,
-        V5: 0,
-        V6: 0,
-        V7: 0,
-        V8: 0,
-        V9: 0,
-        VA: 0,
-        VB: 0,
-        VC: 0,
-        VD: 0,
-        VE: 0,
-        VF: 0,
-    };
+    this.registers = new Array(16);
 
     // Single 32-bit register
     this.I = 0;
@@ -142,11 +133,8 @@ Interpreter.prototype.reset = function () {
     }
 
     // Reset registers
-    for(var propertyName in this.registers) {
-        if(this.registers.hasOwnProperty(propertyName)) {
-            var registerName = propertyName;
-            this.registers[registerName] = 0;
-        }
+    for(i = 0; i < this.registers.length; i += 1) {
+        this.registers[i] = 0;
     }
 
     // Reset accumulator
@@ -276,6 +264,31 @@ Interpreter.prototype.call = function (callAddress) {
     console.log("Calling subroutine at 0x" + callAddress.toString(16));
     this.pushStack(this.PC);
     this.PC = callAddress;
+}
+
+Interpreter.prototype.skipEqualImmediate = function (
+      registerNumber,
+      immediateValue
+    ) {
+    var shouldSkip = this.registers[registerNumber] == immediateValue;
+    if(shouldSkip) {
+        console.log(
+            'Register V'
+            + registerNumber.toString(16)
+            + ' equals '
+            + immediateValue.toString(16)
+            + ' - skipping next instruction'
+        )
+        this.PC += 1;
+    } else {
+        console.log(
+            'Register V'
+            + registerNumber.toString(16)
+            + ' does not equal '
+            + immediateValue.toString(16)
+            + ' - not skipping next instruction'
+        )
+    }
 }
 
 

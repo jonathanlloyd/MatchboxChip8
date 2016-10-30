@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Matchbox Chip 8 Interpreter</title>
+  <title>Matchbox Chip 8 Emulator</title>
   <meta name="description" content="Matchbox Chip 8 Interpreter">
   <meta name="author" content="Jonathan Lloyd">
   <!--[if lt IE 9]>
@@ -11,7 +11,7 @@
   <![endif]-->
 </head>
 <body>
-  <h1>Matchbox Chip 8 Interpreter</h1>
+  <h1>Matchbox Chip 8 Emulator</h1>
   <canvas id="stage" width="640px" height="320px" style="border: 1px solid black;">
   </canvas>
   <div>
@@ -20,10 +20,18 @@
   <div>
     <a href="#" onclick="startRom('ROMS/BLINKY')">BLINKY</a>
   </div>
+  <button onclick="stepInterpreter()">STEP</button>
   <script src="../dist/MatchboxChip8.js"></script>
   <script>
     var drawingContext = document.getElementById("stage").getContext("2d");
     var interpreter = new MatchboxChip8.Interpreter(drawingContext);
+
+    var testProgram = [
+      0x00e0,
+      0x00ee,
+      0x1200
+    ];
+    interpreter.loadInstructions(testProgram);
 
     function startRom(rom) {
       interpreter.insertRom(rom);
@@ -32,6 +40,10 @@
     function romUploaded(romFiles) {
       var romFile = romFiles[0];
       startRom(romFile);
+    }
+
+    function stepInterpreter() {
+      interpreter.step();
     }
   </script>
 </body>

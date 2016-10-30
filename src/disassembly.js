@@ -31,6 +31,18 @@ function disassemble(rom, callback) {
     });
 }
 
+
+function instructionToHexString(instruction) {
+    var hexString = instruction.toString(16);
+    var numberMissingChars = 4 - hexString.length;
+    for(var i = 0; i < numberMissingChars; i += 1) {
+        hexString = "0" + hexString;
+    }
+    return hexString;
+}
+
+
 module.exports = {
-    disassemble: disassemble
+    disassemble: disassemble,
+    instructionToHexString: instructionToHexString
 }

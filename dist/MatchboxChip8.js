@@ -81,6 +81,26 @@ var MatchboxChip8 =
 
 	var PROGRAM_ADDRESS = 0x200;
 
+	var INSTRUCTION_MAP = {
+	    "^00e0$": function (interpreter, matchResult) {
+	        return function () {
+	            interpreter.clearDisplay();
+	        }
+	    },
+	    "^00ee$": function (interpreter, matchResult) {
+	        return function () {
+	            interpreter.subroutineReturn();
+	        }
+	    },
+	    "^1(...)$": function (interpreter, matchResult) {
+	        var jumpAddress = parseInt(matchResult[1], 16);
+
+	        return function () {
+	            interpreter.jump(jumpAddress);
+	        }
+	    }
+	};
+
 
 	/**
 	 * Matchbox interpreter
@@ -143,6 +163,46 @@ var MatchboxChip8 =
 
 	    // The stack - contains 16 16bit values
 	    this.stack = new Array(16);
+
+	    this.reset();
+	};
+
+	/**
+	 * Reset the state of the emulator (like a hardware reset).
+	 */
+	Interpreter.prototype.reset = function () {
+	    // Reset RAM
+	    for(var i = 0; i < this.RAM.length; i += 1) {
+	        this.RAM[i] = 0;
+	    }
+
+	    // Reset registers
+	    for(var propertyName in this.registers) {
+	        if(this.registers.hasOwnProperty(propertyName)) {
+	            var registerName = propertyName;
+	            this.registers[registerName] = 0;
+	        }
+	    }
+
+	    // Reset accumulator
+	    this.I = 0;
+
+	    // Reset delay timer
+	    this.DT = 0;
+
+	    // Reset sound timer
+	    this.ST = 0;
+
+	    // Reset program counter
+	    this.PC = PROGRAM_ADDRESS;
+
+	    // Reset stack pointer
+	    this.SP = 0;
+
+	    // Reset stack
+	    for(i = 0; i < this.stack.length; i += 1) {
+	        this.stack[i] = 0;
+	    }
 	};
 
 	/**
@@ -158,16 +218,16 @@ var MatchboxChip8 =
 	};
 
 	/**
-	 * Load the given ROM into memory
+	 * Load the given numeric instructions into memory
 	 * @param {Array} instructions - List of numeric instructions
 	 */
 	Interpreter.prototype.loadInstructions = function (instructions) {
-	      for(var i = 0; i < instructions.length; i += 1) {
-	          var instructionAddress = PROGRAM_ADDRESS + i;
-	          var instruction = instructions[i];
+	    for(var i = 0; i < instructions.length; i += 1) {
+	        var instructionAddress = PROGRAM_ADDRESS + i;
+	        var instruction = instructions[i];
 
-	          this.RAM[instructionAddress] = instruction;
-	      }
+	        this.RAM[instructionAddress] = instruction;
+	    }
 	};
 
 	/**
@@ -179,9 +239,51 @@ var MatchboxChip8 =
 	    // Decode instruction
 	    var decodedInstruction = this.decodeInstruction(rawInstruction);
 	    // Execute instruction
-	    var interpreterMethod = this[decodedInstruction['instructionName']];
-	    interpreterMethod(decodedInstruction['parameters']);
+	    if(decodedInstruction !== null) {
+	        decodedInstruction();
+	    } else {
+	        console.log("Invalid instruction: " + rawInstruction);
+	    }
+	    // Increase program counter
+	    this.PC += 1;
 	};
+
+
+	/**
+	 * Decode a numeric instruction into a lambda containing the needed
+	 * interpreter function with the necessary parameters embedded in the
+	 * closure.
+	 * @param {Number} rawInstruction - Numeric representation of an instruction
+	 */
+	Interpreter.prototype.decodeInstruction = function(rawInstruction) {
+	    var hexString = disassembly.instructionToHexString(rawInstruction);
+
+	    for(var propertyName in INSTRUCTION_MAP) {
+	        if(INSTRUCTION_MAP.hasOwnProperty(propertyName)) {
+	            var instructionRe = propertyName;
+	            var matchResult = hexString.match(instructionRe)
+	            if(matchResult !== null) {
+	                var instructionGenerator = INSTRUCTION_MAP[instructionRe];
+	                return instructionGenerator(this, matchResult);
+	            }
+	        }
+	    }
+
+	    return null;
+	};
+
+	Interpreter.prototype.clearDisplay = function () {
+	    console.log("Clearing display");
+	}
+
+	Interpreter.prototype.subroutineReturn = function () {
+	    console.log("Returning from subroutine");
+	}
+
+	Interpreter.prototype.jump = function (jumpAddress) {
+	    console.log("Jumping to 0x" + jumpAddress.toString(16));
+	    this.PC = jumpAddress - 1;
+	}
 
 
 	module.exports = {
@@ -226,8 +328,20 @@ var MatchboxChip8 =
 	    });
 	}
 
+
+	function instructionToHexString(instruction) {
+	    var hexString = instruction.toString(16);
+	    var numberMissingChars = 4 - hexString.length;
+	    for(var i = 0; i < numberMissingChars; i += 1) {
+	        hexString = "0" + hexString;
+	    }
+	    return hexString;
+	}
+
+
 	module.exports = {
-	    disassemble: disassemble
+	    disassemble: disassemble,
+	    instructionToHexString: instructionToHexString
 	}
 
 

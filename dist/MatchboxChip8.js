@@ -79,6 +79,8 @@ var MatchboxChip8 =
 
 	var disassembly = __webpack_require__(1);
 
+	var PROGRAM_ADDRESS = 0x200;
+
 
 	/**
 	 * Matchbox interpreter
@@ -143,12 +145,34 @@ var MatchboxChip8 =
 	    this.stack = new Array(16);
 	};
 
+	/**
+	 * Disassemble and load the given ROM into memory
+	 * @param {File || string} rom - A File Object containing the ROM data or
+	 *     a URL to such a file.
+	 */
 	Interpreter.prototype.insertRom = function (rom) {
-	    disassembly.disassemble(rom, function (romData) {
-	        console.log(romData);
+	    var interpreter = this;
+	    disassembly.disassemble(rom, function (instructions) {
+	        interpreter.loadInstructions(instructions);
 	    });
 	};
 
+	/**
+	 * Load the given ROM into memory
+	 * @param {Array} instructions - List of numeric instructions
+	 */
+	Interpreter.prototype.loadInstructions = function (instructions) {
+	      for(var i = 0; i < instructions.length; i += 1) {
+	          var instructionAddress = PROGRAM_ADDRESS + i;
+	          var instruction = instructions[i];
+
+	          this.RAM[instructionAddress] = instruction;
+	      }
+	};
+
+	/**
+	 * Step through one instruction cycle
+	 */
 	Interpreter.prototype.step = function() {
 	    // Fetch instruction
 	    var rawInstruction = this.RAM[this.PC];
@@ -159,6 +183,7 @@ var MatchboxChip8 =
 	    interpreterMethod(decodedInstruction['parameters']);
 	};
 
+
 	module.exports = {
 	    Interpreter: Interpreter,
 	};
@@ -168,9 +193,11 @@ var MatchboxChip8 =
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
 	/**
 	 * Disassembly
-	 * Disassemble binary ROM files into an array of numerical data
+	 * Disassemble binary ROM files into an array of numeric instructions
 	 * @module disassembly
 	 */
 
@@ -181,13 +208,20 @@ var MatchboxChip8 =
 	}
 
 
+	/**
+	 * Disassemble the given ROM binary and return a list of numeric instructions
+	 * @param {File || string} rom - A File Object containing the ROM data or
+	 *     a URL to such a file.
+	 * @param {function} callback - Callback which will be called with the
+	 *     disassembled data
+	 */
 	function disassemble(rom, callback) {
 	    jBinary.load(rom, TYPESET, function (err, binary) {
-	        var romData = binary.readAll();
+	        var instructions = binary.readAll();
 	        if(err) {
 	            callback(null);
 	        } else {
-	            callback(romData);
+	            callback(instructions);
 	        }
 	    });
 	}

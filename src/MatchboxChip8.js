@@ -32,6 +32,8 @@ THE SOFTWARE.
 
 var disassembly = require("./disassembly");
 
+var PROGRAM_ADDRESS = 0x200;
+
 
 /**
  * Matchbox interpreter
@@ -94,6 +96,46 @@ var Interpreter = function (context) {
 
     // The stack - contains 16 16bit values
     this.stack = new Array(16);
+
+    this.reset();
+};
+
+/**
+ * Reset the state of the emulator (like a hardware reset).
+ */
+Interpreter.prototype.reset = function () {
+    // Reset RAM
+    for(var i = 0; i < this.RAM.length; i += 1) {
+        this.RAM[i] = 0;
+    }
+
+    // Reset registers
+    for(property in this.registers) {
+        if(this.registers.hasOwnProperty(property)) {
+            var registerName = property;
+            this.registers[registerName] = 0;
+        }
+    }
+
+    // Reset accumulator
+    this.I = 0;
+
+    // Reset delay timer
+    this.DT = 0;
+
+    // Reset sound timer
+    this.ST = 0;
+
+    // Reset program counter
+    this.PC = 0;
+
+    // Reset stack pointer
+    this.SP = 0;
+
+    // Reset stack
+    for(i; i < this.stack.length; i += 1) {
+        this.stack[i] = 0;
+    }
 };
 
 /**
@@ -102,9 +144,23 @@ var Interpreter = function (context) {
  *     a URL to such a file.
  */
 Interpreter.prototype.insertRom = function (rom) {
-    disassembly.disassemble(rom, function (romData) {
-        console.log(romData);
+    var interpreter = this;
+    disassembly.disassemble(rom, function (instructions) {
+        interpreter.loadInstructions(instructions);
     });
+};
+
+/**
+ * Load the given numeric instructions into memory
+ * @param {Array} instructions - List of numeric instructions
+ */
+Interpreter.prototype.loadInstructions = function (instructions) {
+      for(var i = 0; i < instructions.length; i += 1) {
+          var instructionAddress = PROGRAM_ADDRESS + i;
+          var instruction = instructions[i];
+
+          this.RAM[instructionAddress] = instruction;
+      }
 };
 
 /**

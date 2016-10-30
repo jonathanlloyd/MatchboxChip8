@@ -61,8 +61,8 @@ var INSTRUCTION_MAP = {
  * @param {CanvasRenderingContext2D} context - The 2D canvas drawing
  *     context used to draw the screen for the VM.
  */
-var Interpreter = function (context) {
-    this.drawingContext = context;
+var Interpreter = function () {
+    this.display = new Array(2048);
 
     /*
      * 4KB of internal memory
@@ -124,8 +124,13 @@ var Interpreter = function (context) {
  * Reset the state of the emulator (like a hardware reset).
  */
 Interpreter.prototype.reset = function () {
+    // Clear display
+    for(var i = 0; i < this.display.length; i += 1) {
+        this.display[i] = 0;
+    }
+
     // Reset RAM
-    for(var i = 0; i < this.RAM.length; i += 1) {
+    for(i = 0; i < this.RAM.length; i += 1) {
         this.RAM[i] = 0;
     }
 
@@ -194,8 +199,6 @@ Interpreter.prototype.step = function() {
     // Execute instruction
     if(decodedInstruction !== null) {
         decodedInstruction();
-    } else {
-        console.log("Invalid instruction: " + rawInstruction);
     }
     // Increase program counter
     this.PC += 1;
@@ -222,11 +225,23 @@ Interpreter.prototype.decodeInstruction = function(rawInstruction) {
         }
     }
 
+    console.log("Invalid instruction: 0x" + hexString);
     return null;
 };
 
+Interpreter.prototype.getPixel = function (x, y) {
+    return this.display[(64 * y) + x];
+}
+
+Interpreter.prototype.setPixel = function (x, y, value) {
+    return this.display[(64 * y) + x] = value;
+}
+
 Interpreter.prototype.clearDisplay = function () {
     console.log("Clearing display");
+    for(var i = 0; i < this.display.length; i += 1) {
+        this.display[i] = 0;
+    }
 }
 
 Interpreter.prototype.subroutineReturn = function () {

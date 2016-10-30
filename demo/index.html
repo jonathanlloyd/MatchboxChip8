@@ -23,15 +23,23 @@
   <button onclick="stepInterpreter()">STEP</button>
   <script src="../dist/MatchboxChip8.js"></script>
   <script>
+    var FOREGROUND_COLOR = '#00FF00';
+    var BACKGROUND_COLOR = '#000000';
+
     var drawingContext = document.getElementById("stage").getContext("2d");
-    var interpreter = new MatchboxChip8.Interpreter(drawingContext);
+    var interpreter = new MatchboxChip8.Interpreter();
 
     var testProgram = [
-      0x00e0,
       0x00ee,
-      0x1200
+      0x00e0,
+      0x1200,
     ];
     interpreter.loadInstructions(testProgram);
+    interpreter.setPixel(0, 0, 1);
+    interpreter.setPixel(1, 1, 1);
+    interpreter.setPixel(2, 2, 1);
+    interpreter.setPixel(3, 3, 1);
+    renderDisplay();
 
     function startRom(rom) {
       interpreter.insertRom(rom);
@@ -44,6 +52,25 @@
 
     function stepInterpreter() {
       interpreter.step();
+      renderDisplay();
+    }
+
+    function renderDisplay() {
+      var cachedFillStyle = drawingContext.fillStyle;
+
+      for(var x = 0; x < 64; x += 1) {
+        for(var y = 0; y < 32; y += 1) {
+          var pixel = interpreter.getPixel(x, y);
+          if(pixel === 1) {
+            drawingContext.fillStyle = FOREGROUND_COLOR;
+          } else {
+            drawingContext.fillStyle = BACKGROUND_COLOR;
+          }
+          drawingContext.fillRect(x*10, y*10, 10, 10)
+        }
+      }
+
+      drawingContext.fillStyle = cachedFillStyle;
     }
   </script>
 </body>

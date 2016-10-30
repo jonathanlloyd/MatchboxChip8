@@ -45,4 +45,4 @@ function instructionToHexString(instruction) {
 module.exports = {
     disassemble: disassemble,
     instructionToHexString: instructionToHexString
-}
+};

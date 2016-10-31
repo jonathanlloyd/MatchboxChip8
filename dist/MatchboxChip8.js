@@ -121,6 +121,17 @@ var MatchboxChip8 =
 	        return function () {
 	            interpreter.skipNotEqualImmediate(registerNumber, immediateValue);
 	        }
+	    },
+	    "^5(.)(.)0$": function (interpreter, matchResult) {
+	        var registerNumberX = parseInt(matchResult[1], 16);
+	        var registerNumberY = parseInt(matchResult[2], 16);
+
+	        return function () {
+	            interpreter.skipEqual(
+	                registerNumberX,
+	                registerNumberY
+	            );
+	        }
 	    }
 	};
 
@@ -372,6 +383,38 @@ var MatchboxChip8 =
 	            + immediateValue.toString(16)
 	            + ' - not skipping next instruction'
 	        )
+	    }
+	}
+
+	Interpreter.prototype.skipEqual = function (
+	      registerNumberX,
+	      registerNumberY
+	  ) {
+	    console.log("Skip Equal");
+
+	    var registerXValue = this.registers[registerNumberX];
+	    var registerYValue = this.registers[registerNumberY];
+	    var shouldSkip = registerXValue === registerYValue;
+
+	    if(shouldSkip) {
+	        console.log(
+	            'Register V'
+	            + registerNumberX.toString(16)
+	            + ' equals '
+	            + 'Register V'
+	            + registerNumberY.toString(16)
+	            + ' - skipping next instruction'
+	        );
+	        this.PC += 1;
+	    } else {
+	        console.log(
+	            'Register V'
+	            + registerNumberX.toString(16)
+	            + ' does not equal '
+	            + 'Register V'
+	            + registerNumberY.toString(16)
+	            + ' - not skipping next instruction'
+	        );
 	    }
 	}
 

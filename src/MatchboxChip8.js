@@ -118,6 +118,39 @@ var INSTRUCTION_MAP = {
                 registerNumberY
             );
         }
+    },
+    "^8(.)(.)1$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.orRegister(
+                registerNumberX,
+                registerNumberY
+            );
+        }
+    },
+    "^8(.)(.)2$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.andRegister(
+                registerNumberX,
+                registerNumberY
+            );
+        }
+    },
+    "^8(.)(.)3$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.xorRegister(
+                registerNumberX,
+                registerNumberY
+            );
+        }
     }
 };
 
@@ -443,6 +476,51 @@ Interpreter.prototype.loadRegister = function (
     )
     var registerYValue = this.registers[registerNumberY]
     this.registers[registerNumberX] = registerYValue;
+};
+
+Interpreter.prototype.orRegister = function (
+        registerNumberX,
+        registerNumberY
+    ) {
+    console.log(
+        "ORing the value of register V"
+        + registerNumberY
+        + " into register V"
+        + registerNumberX
+    )
+    var registerXValue = this.registers[registerNumberX]
+    var registerYValue = this.registers[registerNumberY]
+    this.registers[registerNumberX] = registerYValue | registerXValue;
+};
+
+Interpreter.prototype.andRegister = function (
+        registerNumberX,
+        registerNumberY
+    ) {
+    console.log(
+        "ANDing the value of register V"
+        + registerNumberY
+        + " into register V"
+        + registerNumberX
+    )
+    var registerXValue = this.registers[registerNumberX]
+    var registerYValue = this.registers[registerNumberY]
+    this.registers[registerNumberX] = registerYValue & registerXValue;
+};
+
+Interpreter.prototype.xorRegister = function (
+        registerNumberX,
+        registerNumberY
+    ) {
+    console.log(
+        "XORing the value of register V"
+        + registerNumberY
+        + " into register V"
+        + registerNumberX
+    )
+    var registerXValue = this.registers[registerNumberX]
+    var registerYValue = this.registers[registerNumberY]
+    this.registers[registerNumberX] = registerYValue ^ registerXValue;
 };
 
 

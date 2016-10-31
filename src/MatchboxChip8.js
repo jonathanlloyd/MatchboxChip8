@@ -85,6 +85,17 @@ var INSTRUCTION_MAP = {
                 registerNumberY
             );
         }
+    },
+    "^6(.)(..)$": function (interpreter, matchResult) {
+        var registerNumber = parseInt(matchResult[1], 16);
+        var immediateValue = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.loadRegisterImmediate(
+                registerNumber,
+                immediateValue
+            );
+        }
     }
 };
 
@@ -371,6 +382,19 @@ Interpreter.prototype.skipEqual = function (
         );
     }
 }
+
+Interpreter.prototype.loadRegisterImmediate = function (
+        registerNumber,
+        immediateValue
+    ) {
+    console.log(
+        "Loading value 0x"
+        + immediateValue.toString(16)
+        + " into register V"
+        + registerNumber
+    )
+    this.registers[registerNumber] = immediateValue;
+};
 
 
 module.exports = {

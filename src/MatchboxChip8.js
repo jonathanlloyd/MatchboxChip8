@@ -107,6 +107,17 @@ var INSTRUCTION_MAP = {
                 immediateValue
             );
         }
+    },
+    "^8(.)(.)0$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.loadRegister(
+                registerNumberX,
+                registerNumberY
+            );
+        }
     }
 };
 
@@ -418,6 +429,20 @@ Interpreter.prototype.addRegisterImmediate = function (
         + registerNumber
     )
     this.registers[registerNumber] += immediateValue;
+};
+
+Interpreter.prototype.loadRegister = function (
+        registerNumberX,
+        registerNumberY
+    ) {
+    console.log(
+        "Loading the value of register V"
+        + registerNumberY
+        + " into register V"
+        + registerNumberX
+    )
+    var registerYValue = this.registers[registerNumberY]
+    this.registers[registerNumberX] = registerYValue;
 };
 
 

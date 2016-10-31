@@ -254,6 +254,7 @@ var MatchboxChip8 =
 	 */
 	Interpreter.prototype.step = function() {
 	    // Fetch instruction
+	    console.log("Fetching next instruction @ 0x" + this.PC.toString(16));
 	    var rawInstruction = this.RAM[this.PC];
 	    // Decode instruction
 	    var decodedInstruction = this.decodeInstruction(rawInstruction);

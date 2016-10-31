@@ -143,6 +143,17 @@ var MatchboxChip8 =
 	                immediateValue
 	            );
 	        }
+	    },
+	    "^7(.)(..)$": function (interpreter, matchResult) {
+	        var registerNumber = parseInt(matchResult[1], 16);
+	        var immediateValue = parseInt(matchResult[2], 16);
+
+	        return function () {
+	            interpreter.addRegisterImmediate(
+	                registerNumber,
+	                immediateValue
+	            );
+	        }
 	    }
 	};
 
@@ -441,6 +452,19 @@ var MatchboxChip8 =
 	        + registerNumber
 	    )
 	    this.registers[registerNumber] = immediateValue;
+	};
+
+	Interpreter.prototype.addRegisterImmediate = function (
+	        registerNumber,
+	        immediateValue
+	    ) {
+	    console.log(
+	        "Adding value 0x"
+	        + immediateValue.toString(16)
+	        + " to register V"
+	        + registerNumber
+	    )
+	    this.registers[registerNumber] += immediateValue;
 	};
 
 

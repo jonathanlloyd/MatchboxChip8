@@ -113,6 +113,14 @@ var MatchboxChip8 =
 	        return function () {
 	            interpreter.skipEqualImmediate(registerNumber, immediateValue);
 	        }
+	    },
+	    "^4(.)(..)$": function (interpreter, matchResult) {
+	        var registerNumber = parseInt(matchResult[1], 16);
+	        var immediateValue = parseInt(matchResult[2], 16);
+
+	        return function () {
+	            interpreter.skipNotEqualImmediate(registerNumber, immediateValue);
+	        }
 	    }
 	};
 
@@ -317,6 +325,8 @@ var MatchboxChip8 =
 	      registerNumber,
 	      immediateValue
 	    ) {
+	    console.log("Skip Equal Immediate");
+
 	    var shouldSkip = this.registers[registerNumber] == immediateValue;
 	    if(shouldSkip) {
 	        console.log(
@@ -332,6 +342,33 @@ var MatchboxChip8 =
 	            'Register V'
 	            + registerNumber.toString(16)
 	            + ' does not equal '
+	            + immediateValue.toString(16)
+	            + ' - not skipping next instruction'
+	        )
+	    }
+	}
+
+	Interpreter.prototype.skipNotEqualImmediate = function (
+	      registerNumber,
+	      immediateValue
+	    ) {
+	    console.log("Skip Not Equal Immediate");
+
+	    var shouldSkip = this.registers[registerNumber] != immediateValue;
+	    if(shouldSkip) {
+	        console.log(
+	            'Register V'
+	            + registerNumber.toString(16)
+	            + ' does not equal '
+	            + immediateValue.toString(16)
+	            + ' - skipping next instruction'
+	        )
+	        this.PC += 1;
+	    } else {
+	        console.log(
+	            'Register V'
+	            + registerNumber.toString(16)
+	            + ' equals '
 	            + immediateValue.toString(16)
 	            + ' - not skipping next instruction'
 	        )

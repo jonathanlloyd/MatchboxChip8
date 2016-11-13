@@ -9,7 +9,7 @@ clean:
 	@rm -rf ./dist/*
 
 test:
-	@mocha ./tests
+	@npm test
 
 lint:
 	@jshint ./src/*

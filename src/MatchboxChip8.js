@@ -230,7 +230,7 @@ Interpreter.prototype.clearDisplay = function () {
 
 Interpreter.prototype.subroutineReturn = function () {
     log.debug("Returning from subroutine");
-    this.PC = this.popStack();
+    this.PC = this.popStack() - 1;
 };
 
 Interpreter.prototype.jump = function (jumpAddress) {
@@ -241,7 +241,7 @@ Interpreter.prototype.jump = function (jumpAddress) {
 Interpreter.prototype.call = function (callAddress) {
     log.debug("Calling subroutine at 0x", callAddress.toString(16));
     this.pushStack(this.PC);
-    this.PC = callAddress;
+    this.PC = callAddress - 1;
 };
 
 Interpreter.prototype.skipEqualImmediate = function (

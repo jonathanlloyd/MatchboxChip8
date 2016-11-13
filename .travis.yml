@@ -1,4 +1,5 @@
 language: JAVASCRIPT
 script:
+ - npm install --dev
  - make
  - make test

@@ -415,6 +415,31 @@ Interpreter.prototype.xorRegister = function (
     this.registers[registerNumberX] = registerYValue ^ registerXValue;
 };
 
+Interpreter.prototype.addRegister = function (
+        registerNumberX,
+        registerNumberY
+    ) {
+    log.debug(
+        "ADDing the value of register V",
+        registerNumberY,
+        " into register V",
+        registerNumberX
+    );
+    var registerXValue = this.registers[registerNumberX];
+    var registerYValue = this.registers[registerNumberY];
+    var result = registerYValue + registerXValue;
+
+    var carryBit = 0;
+    if (result > 255) {
+        log.debug("ADD overflowed. Setting carry bit.");
+        result = 255;
+        carryBit = 1;
+    }
+
+    this.registers[registerNumberX] = result;
+    this.registers[0xF] = carryBit;
+};
+
 
 module.exports = {
     Interpreter: Interpreter,

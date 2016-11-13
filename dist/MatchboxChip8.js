@@ -263,7 +263,7 @@ var MatchboxChip8 =
 	};
 
 	Interpreter.prototype.popStack = function () {
-	    value = this.stack[this.SP];
+	    var value = this.stack[this.SP];
 	    this.SP -= 1;
 	    return value;
 	};
@@ -305,7 +305,7 @@ var MatchboxChip8 =
 	            ' equals ',
 	            immediateValue.toString(16),
 	            ' - skipping next instruction'
-	        )
+	        );
 	        this.PC += 1;
 	    } else {
 	        log.debug(
@@ -314,9 +314,9 @@ var MatchboxChip8 =
 	            ' does not equal ',
 	            immediateValue.toString(16),
 	            ' - not skipping next instruction'
-	        )
+	        );
 	    }
-	}
+	};
 
 	Interpreter.prototype.skipNotEqualImmediate = function (
 	      registerNumber,
@@ -332,61 +332,61 @@ var MatchboxChip8 =
 	            ' does not equal ',
 	            immediateValue.toString(16),
 	            ' - skipping next instruction'
-	        )
+	        );
 	        this.PC += 1;
 	    } else {
-	        console.log(
-	            'Register V'
-	            + registerNumber.toString(16)
-	            + ' equals '
-	            + immediateValue.toString(16)
-	            + ' - not skipping next instruction'
-	        )
+	        log.debug(
+	            'Register V',
+	            registerNumber.toString(16),
+	            ' equals ',
+	            immediateValue.toString(16),
+	            ' - not skipping next instruction'
+	        );
 	    }
-	}
+	};
 
 	Interpreter.prototype.skipEqual = function (
 	      registerNumberX,
 	      registerNumberY
 	  ) {
-	    console.log("Skip Equal");
+	    log.debug("Skip Equal");
 
 	    var registerXValue = this.registers[registerNumberX];
 	    var registerYValue = this.registers[registerNumberY];
 	    var shouldSkip = registerXValue === registerYValue;
 
 	    if(shouldSkip) {
-	        console.log(
-	            'Register V'
-	            + registerNumberX.toString(16)
-	            + ' equals '
-	            + 'Register V'
-	            + registerNumberY.toString(16)
-	            + ' - skipping next instruction'
+	        log.debug(
+	            'Register V',
+	            registerNumberX.toString(16),
+	            ' equals ',
+	            'Register V',
+	            registerNumberY.toString(16),
+	            ' - skipping next instruction'
 	        );
 	        this.PC += 1;
 	    } else {
-	        console.log(
-	            'Register V'
-	            + registerNumberX.toString(16)
-	            + ' does not equal '
-	            + 'Register V'
-	            + registerNumberY.toString(16)
-	            + ' - not skipping next instruction'
+	        log.debug(
+	            'Register V',
+	            registerNumberX.toString(16),
+	            ' does not equal ',
+	            'Register V',
+	            registerNumberY.toString(16),
+	            ' - not skipping next instruction'
 	        );
 	    }
-	}
+	};
 
 	Interpreter.prototype.loadRegisterImmediate = function (
 	        registerNumber,
 	        immediateValue
 	    ) {
-	    console.log(
-	        "Loading value 0x"
-	        + immediateValue.toString(16)
-	        + " into register V"
-	        + registerNumber
-	    )
+	    log.debug(
+	        "Loading value 0x",
+	        immediateValue.toString(16),
+	        " into register V",
+	        registerNumber
+	    );
 	    this.registers[registerNumber] = immediateValue;
 	};
 
@@ -394,12 +394,12 @@ var MatchboxChip8 =
 	        registerNumber,
 	        immediateValue
 	    ) {
-	    console.log(
-	        "Adding value 0x"
-	        + immediateValue.toString(16)
-	        + " to register V"
-	        + registerNumber
-	    )
+	    log.debug(
+	        "Adding value 0x",
+	        immediateValue.toString(16),
+	        " to register V",
+	        registerNumber
+	    );
 	    this.registers[registerNumber] += immediateValue;
 	};
 
@@ -407,13 +407,13 @@ var MatchboxChip8 =
 	        registerNumberX,
 	        registerNumberY
 	    ) {
-	    console.log(
-	        "Loading the value of register V"
-	        + registerNumberY
-	        + " into register V"
-	        + registerNumberX
-	    )
-	    var registerYValue = this.registers[registerNumberY]
+	    log.debug(
+	        "Loading the value of register V",
+	        registerNumberY,
+	        " into register V",
+	        registerNumberX
+	    );
+	    var registerYValue = this.registers[registerNumberY];
 	    this.registers[registerNumberX] = registerYValue;
 	};
 
@@ -421,14 +421,14 @@ var MatchboxChip8 =
 	        registerNumberX,
 	        registerNumberY
 	    ) {
-	    console.log(
-	        "ORing the value of register V"
-	        + registerNumberY
-	        + " into register V"
-	        + registerNumberX
-	    )
-	    var registerXValue = this.registers[registerNumberX]
-	    var registerYValue = this.registers[registerNumberY]
+	    log.debug(
+	        "ORing the value of register V",
+	        registerNumberY,
+	        " into register V",
+	        registerNumberX
+	    );
+	    var registerXValue = this.registers[registerNumberX];
+	    var registerYValue = this.registers[registerNumberY];
 	    this.registers[registerNumberX] = registerYValue | registerXValue;
 	};
 
@@ -436,14 +436,14 @@ var MatchboxChip8 =
 	        registerNumberX,
 	        registerNumberY
 	    ) {
-	    console.log(
-	        "ANDing the value of register V"
-	        + registerNumberY
-	        + " into register V"
-	        + registerNumberX
-	    )
-	    var registerXValue = this.registers[registerNumberX]
-	    var registerYValue = this.registers[registerNumberY]
+	    log.debug(
+	        "ANDing the value of register V",
+	        registerNumberY,
+	        " into register V",
+	        registerNumberX
+	    );
+	    var registerXValue = this.registers[registerNumberX];
+	    var registerYValue = this.registers[registerNumberY];
 	    this.registers[registerNumberX] = registerYValue & registerXValue;
 	};
 
@@ -451,15 +451,40 @@ var MatchboxChip8 =
 	        registerNumberX,
 	        registerNumberY
 	    ) {
-	    console.log(
-	        "XORing the value of register V"
-	        + registerNumberY
-	        + " into register V"
-	        + registerNumberX
-	    )
-	    var registerXValue = this.registers[registerNumberX]
-	    var registerYValue = this.registers[registerNumberY]
+	    log.debug(
+	        "XORing the value of register V",
+	        registerNumberY,
+	        " into register V",
+	        registerNumberX
+	    );
+	    var registerXValue = this.registers[registerNumberX];
+	    var registerYValue = this.registers[registerNumberY];
 	    this.registers[registerNumberX] = registerYValue ^ registerXValue;
+	};
+
+	Interpreter.prototype.addRegister = function (
+	        registerNumberX,
+	        registerNumberY
+	    ) {
+	    log.debug(
+	        "ADDing the value of register V",
+	        registerNumberY,
+	        " into register V",
+	        registerNumberX
+	    );
+	    var registerXValue = this.registers[registerNumberX];
+	    var registerYValue = this.registers[registerNumberY];
+	    var result = registerYValue + registerXValue;
+
+	    var carryBit = 0;
+	    if (result > 255) {
+	        log.debug("ADD overflowed. Setting carry bit.");
+	        result = 255;
+	        carryBit = 1;
+	    }
+
+	    this.registers[registerNumberX] = result;
+	    this.registers[0xF] = carryBit;
 	};
 
 
@@ -826,6 +851,17 @@ var MatchboxChip8 =
 	                registerNumberY
 	            );
 	        };
+	    },
+	    "^8(.)(.)4$": function (interpreter, matchResult) {
+	        var registerNumberX = parseInt(matchResult[1], 16),
+	            registerNumberY = parseInt(matchResult[2], 16);
+
+	        return function () {
+	            interpreter.addRegister(
+	                registerNumberX,
+	                registerNumberY
+	            );
+	        };
 	    }
 	};
 
@@ -866,7 +902,7 @@ var MatchboxChip8 =
 
 	var TYPESET = {
 	  "jBinary.all": ['array', 'uint16'],
-	}
+	};
 
 
 	/**

@@ -30,10 +30,20 @@ THE SOFTWARE.
  * @module matchboxchip8
  */
 
+
+var log = require('loglevel').getLogger("matchboxchip8");
+
 var disassembly = require("./disassembly");
 var rom_loading = require("./rom_loading");
 
+var DEBUG_MODE = true;
 var PROGRAM_ADDRESS = 0x200;
+
+if (DEBUG_MODE) {
+    log.setLevel("debug");
+} else {
+    log.setLevel("warn");
+}
 
 
 /**
@@ -154,7 +164,7 @@ Interpreter.prototype.loadInstructions = function (instructions) {
  */
 Interpreter.prototype.step = function() {
     // Fetch instruction
-    console.log("Fetching next instruction @ 0x" + this.PC.toString(16));
+    log.debug("Fetching next instruction @ 0x" + this.PC.toString(16));
     var rawInstruction = this.RAM[this.PC];
     // Decode instruction
     var decodedInstruction = this.decodeInstruction(rawInstruction);
@@ -179,7 +189,7 @@ Interpreter.prototype.decodeInstruction = function(rawInstruction) {
     for(var propertyName in disassembly.INSTRUCTION_MAP) {
         if(disassembly.INSTRUCTION_MAP.hasOwnProperty(propertyName)) {
             var instructionRe = propertyName;
-            var matchResult = hexString.match(instructionRe)
+            var matchResult = hexString.match(instructionRe);
             if(matchResult !== null) {
                 var instructionGenerator = 
                     disassembly.INSTRUCTION_MAP[instructionRe];
@@ -188,148 +198,148 @@ Interpreter.prototype.decodeInstruction = function(rawInstruction) {
         }
     }
 
-    console.log("Invalid instruction: 0x" + hexString);
+    log.warn("Invalid instruction: 0x", hexString);
     return null;
 };
 
 Interpreter.prototype.getPixel = function (x, y) {
     return this.display[(64 * y) + x];
-}
+};
 
 Interpreter.prototype.setPixel = function (x, y, value) {
-    return this.display[(64 * y) + x] = value;
-}
+    this.display[(64 * y) + x] = value;
+};
 
 Interpreter.prototype.pushStack = function (value) {
     this.SP += 1;
     this.stack[this.SP] = value;
-}
+};
 
 Interpreter.prototype.popStack = function () {
-    value = this.stack[this.SP];
+    var value = this.stack[this.SP];
     this.SP -= 1;
     return value;
-}
+};
 
 Interpreter.prototype.clearDisplay = function () {
-    console.log("Clearing display");
+    log.debug("Clearing display");
     for(var i = 0; i < this.display.length; i += 1) {
         this.display[i] = 0;
     }
-}
+};
 
 Interpreter.prototype.subroutineReturn = function () {
-    console.log("Returning from subroutine");
+    log.debug("Returning from subroutine");
     this.PC = this.popStack();
-}
+};
 
 Interpreter.prototype.jump = function (jumpAddress) {
-    console.log("Jumping to 0x" + jumpAddress.toString(16));
+    log.debug("Jumping to 0x", jumpAddress.toString(16));
     this.PC = jumpAddress - 1;
-}
+};
 
 Interpreter.prototype.call = function (callAddress) {
-    console.log("Calling subroutine at 0x" + callAddress.toString(16));
+    log.debug("Calling subroutine at 0x", callAddress.toString(16));
     this.pushStack(this.PC);
     this.PC = callAddress;
-}
+};
 
 Interpreter.prototype.skipEqualImmediate = function (
       registerNumber,
       immediateValue
     ) {
-    console.log("Skip Equal Immediate");
+    log.debug("Skip Equal Immediate");
 
     var shouldSkip = this.registers[registerNumber] == immediateValue;
     if(shouldSkip) {
-        console.log(
-            'Register V'
-            + registerNumber.toString(16)
-            + ' equals '
-            + immediateValue.toString(16)
-            + ' - skipping next instruction'
-        )
+        log.debug(
+            'Register V',
+            registerNumber.toString(16),
+            ' equals ',
+            immediateValue.toString(16),
+            ' - skipping next instruction'
+        );
         this.PC += 1;
     } else {
-        console.log(
-            'Register V'
-            + registerNumber.toString(16)
-            + ' does not equal '
-            + immediateValue.toString(16)
-            + ' - not skipping next instruction'
-        )
+        log.debug(
+            'Register V',
+            registerNumber.toString(16),
+            ' does not equal ',
+            immediateValue.toString(16),
+            ' - not skipping next instruction'
+        );
     }
-}
+};
 
 Interpreter.prototype.skipNotEqualImmediate = function (
       registerNumber,
       immediateValue
     ) {
-    console.log("Skip Not Equal Immediate");
+    log.debug("Skip Not Equal Immediate");
 
     var shouldSkip = this.registers[registerNumber] != immediateValue;
     if(shouldSkip) {
-        console.log(
-            'Register V'
-            + registerNumber.toString(16)
-            + ' does not equal '
-            + immediateValue.toString(16)
-            + ' - skipping next instruction'
-        )
+        log.debug(
+            'Register V',
+            registerNumber.toString(16),
+            ' does not equal ',
+            immediateValue.toString(16),
+            ' - skipping next instruction'
+        );
         this.PC += 1;
     } else {
-        console.log(
-            'Register V'
-            + registerNumber.toString(16)
-            + ' equals '
-            + immediateValue.toString(16)
-            + ' - not skipping next instruction'
-        )
+        log.debug(
+            'Register V',
+            registerNumber.toString(16),
+            ' equals ',
+            immediateValue.toString(16),
+            ' - not skipping next instruction'
+        );
     }
-}
+};
 
 Interpreter.prototype.skipEqual = function (
       registerNumberX,
       registerNumberY
   ) {
-    console.log("Skip Equal");
+    log.debug("Skip Equal");
 
     var registerXValue = this.registers[registerNumberX];
     var registerYValue = this.registers[registerNumberY];
     var shouldSkip = registerXValue === registerYValue;
 
     if(shouldSkip) {
-        console.log(
-            'Register V'
-            + registerNumberX.toString(16)
-            + ' equals '
-            + 'Register V'
-            + registerNumberY.toString(16)
-            + ' - skipping next instruction'
+        log.debug(
+            'Register V',
+            registerNumberX.toString(16),
+            ' equals ',
+            'Register V',
+            registerNumberY.toString(16),
+            ' - skipping next instruction'
         );
         this.PC += 1;
     } else {
-        console.log(
-            'Register V'
-            + registerNumberX.toString(16)
-            + ' does not equal '
-            + 'Register V'
-            + registerNumberY.toString(16)
-            + ' - not skipping next instruction'
+        log.debug(
+            'Register V',
+            registerNumberX.toString(16),
+            ' does not equal ',
+            'Register V',
+            registerNumberY.toString(16),
+            ' - not skipping next instruction'
         );
     }
-}
+};
 
 Interpreter.prototype.loadRegisterImmediate = function (
         registerNumber,
         immediateValue
     ) {
-    console.log(
-        "Loading value 0x"
-        + immediateValue.toString(16)
-        + " into register V"
-        + registerNumber
-    )
+    log.debug(
+        "Loading value 0x",
+        immediateValue.toString(16),
+        " into register V",
+        registerNumber
+    );
     this.registers[registerNumber] = immediateValue;
 };
 
@@ -337,12 +347,12 @@ Interpreter.prototype.addRegisterImmediate = function (
         registerNumber,
         immediateValue
     ) {
-    console.log(
-        "Adding value 0x"
-        + immediateValue.toString(16)
-        + " to register V"
-        + registerNumber
-    )
+    log.debug(
+        "Adding value 0x",
+        immediateValue.toString(16),
+        " to register V",
+        registerNumber
+    );
     this.registers[registerNumber] += immediateValue;
 };
 
@@ -350,13 +360,13 @@ Interpreter.prototype.loadRegister = function (
         registerNumberX,
         registerNumberY
     ) {
-    console.log(
-        "Loading the value of register V"
-        + registerNumberY
-        + " into register V"
-        + registerNumberX
-    )
-    var registerYValue = this.registers[registerNumberY]
+    log.debug(
+        "Loading the value of register V",
+        registerNumberY,
+        " into register V",
+        registerNumberX
+    );
+    var registerYValue = this.registers[registerNumberY];
     this.registers[registerNumberX] = registerYValue;
 };
 
@@ -364,14 +374,14 @@ Interpreter.prototype.orRegister = function (
         registerNumberX,
         registerNumberY
     ) {
-    console.log(
-        "ORing the value of register V"
-        + registerNumberY
-        + " into register V"
-        + registerNumberX
-    )
-    var registerXValue = this.registers[registerNumberX]
-    var registerYValue = this.registers[registerNumberY]
+    log.debug(
+        "ORing the value of register V",
+        registerNumberY,
+        " into register V",
+        registerNumberX
+    );
+    var registerXValue = this.registers[registerNumberX];
+    var registerYValue = this.registers[registerNumberY];
     this.registers[registerNumberX] = registerYValue | registerXValue;
 };
 
@@ -379,14 +389,14 @@ Interpreter.prototype.andRegister = function (
         registerNumberX,
         registerNumberY
     ) {
-    console.log(
-        "ANDing the value of register V"
-        + registerNumberY
-        + " into register V"
-        + registerNumberX
-    )
-    var registerXValue = this.registers[registerNumberX]
-    var registerYValue = this.registers[registerNumberY]
+    log.debug(
+        "ANDing the value of register V",
+        registerNumberY,
+        " into register V",
+        registerNumberX
+    );
+    var registerXValue = this.registers[registerNumberX];
+    var registerYValue = this.registers[registerNumberY];
     this.registers[registerNumberX] = registerYValue & registerXValue;
 };
 
@@ -394,14 +404,14 @@ Interpreter.prototype.xorRegister = function (
         registerNumberX,
         registerNumberY
     ) {
-    console.log(
-        "XORing the value of register V"
-        + registerNumberY
-        + " into register V"
-        + registerNumberX
-    )
-    var registerXValue = this.registers[registerNumberX]
-    var registerYValue = this.registers[registerNumberY]
+    log.debug(
+        "XORing the value of register V",
+        registerNumberY,
+        " into register V",
+        registerNumberX
+    );
+    var registerXValue = this.registers[registerNumberX];
+    var registerYValue = this.registers[registerNumberY];
     this.registers[registerNumberX] = registerYValue ^ registerXValue;
 };
 

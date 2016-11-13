@@ -10,7 +10,7 @@ var jBinary = require("jbinary");
 
 var TYPESET = {
   "jBinary.all": ['array', 'uint16'],
-}
+};
 
 
 /**

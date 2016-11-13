@@ -31,128 +31,9 @@ THE SOFTWARE.
  */
 
 var disassembly = require("./disassembly");
+var rom_loading = require("./rom_loading");
 
 var PROGRAM_ADDRESS = 0x200;
-
-var INSTRUCTION_MAP = {
-    "^00e0$": function (interpreter, matchResult) {
-        return function () {
-            interpreter.clearDisplay();
-        }
-    },
-    "^00ee$": function (interpreter, matchResult) {
-        return function () {
-            interpreter.subroutineReturn();
-        }
-    },
-    "^1(...)$": function (interpreter, matchResult) {
-        var jumpAddress = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.jump(jumpAddress);
-        }
-    },
-    "^2(...)$": function (interpreter, matchResult) {
-        var callAddress = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.call(callAddress);
-        }
-    },
-    "^3(.)(..)$": function (interpreter, matchResult) {
-        var registerNumber = parseInt(matchResult[1], 16);
-        var immediateValue = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.skipEqualImmediate(registerNumber, immediateValue);
-        }
-    },
-    "^4(.)(..)$": function (interpreter, matchResult) {
-        var registerNumber = parseInt(matchResult[1], 16);
-        var immediateValue = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.skipNotEqualImmediate(registerNumber, immediateValue);
-        }
-    },
-    "^5(.)(.)0$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16);
-        var registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.skipEqual(
-                registerNumberX,
-                registerNumberY
-            );
-        }
-    },
-    "^6(.)(..)$": function (interpreter, matchResult) {
-        var registerNumber = parseInt(matchResult[1], 16);
-        var immediateValue = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.loadRegisterImmediate(
-                registerNumber,
-                immediateValue
-            );
-        }
-    },
-    "^7(.)(..)$": function (interpreter, matchResult) {
-        var registerNumber = parseInt(matchResult[1], 16);
-        var immediateValue = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.addRegisterImmediate(
-                registerNumber,
-                immediateValue
-            );
-        }
-    },
-    "^8(.)(.)0$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16);
-        var registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.loadRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        }
-    },
-    "^8(.)(.)1$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16);
-        var registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.orRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        }
-    },
-    "^8(.)(.)2$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16);
-        var registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.andRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        }
-    },
-    "^8(.)(.)3$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16);
-        var registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.xorRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        }
-    }
-};
 
 
 /**
@@ -250,7 +131,7 @@ Interpreter.prototype.reset = function () {
  */
 Interpreter.prototype.insertRom = function (rom) {
     var interpreter = this;
-    disassembly.disassemble(rom, function (instructions) {
+    rom_loading.load_rom(rom, function (instructions) {
         interpreter.loadInstructions(instructions);
     });
 };
@@ -295,12 +176,13 @@ Interpreter.prototype.step = function() {
 Interpreter.prototype.decodeInstruction = function(rawInstruction) {
     var hexString = disassembly.instructionToHexString(rawInstruction);
 
-    for(var propertyName in INSTRUCTION_MAP) {
-        if(INSTRUCTION_MAP.hasOwnProperty(propertyName)) {
+    for(var propertyName in disassembly.INSTRUCTION_MAP) {
+        if(disassembly.INSTRUCTION_MAP.hasOwnProperty(propertyName)) {
             var instructionRe = propertyName;
             var matchResult = hexString.match(instructionRe)
             if(matchResult !== null) {
-                var instructionGenerator = INSTRUCTION_MAP[instructionRe];
+                var instructionGenerator = 
+                    disassembly.INSTRUCTION_MAP[instructionRe];
                 return instructionGenerator(this, matchResult);
             }
         }

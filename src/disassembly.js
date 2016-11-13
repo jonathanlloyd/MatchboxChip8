@@ -2,36 +2,135 @@
 
 /**
  * Disassembly
- * Disassemble binary ROM files into an array of numeric instructions
+ * Disassemble numeric opcode values
  * @module disassembly
  */
 
-var jBinary = require("jbinary");
+var INSTRUCTION_MAP = {
+    "^00e0$": function (interpreter, matchResult) {
+        return function () {
+            interpreter.clearDisplay();
+        }
+    },
+    "^00ee$": function (interpreter, matchResult) {
+        return function () {
+            interpreter.subroutineReturn();
+        }
+    },
+    "^1(...)$": function (interpreter, matchResult) {
+        var jumpAddress = parseInt(matchResult[1], 16);
 
-var TYPESET = {
-  "jBinary.all": ['array', 'uint16'],
-}
+        return function () {
+            interpreter.jump(jumpAddress);
+        }
+    },
+    "^2(...)$": function (interpreter, matchResult) {
+        var callAddress = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.call(callAddress);
+        }
+    },
+    "^3(.)(..)$": function (interpreter, matchResult) {
+        var registerNumber = parseInt(matchResult[1], 16);
+        var immediateValue = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.skipEqualImmediate(registerNumber, immediateValue);
+        }
+    },
+    "^4(.)(..)$": function (interpreter, matchResult) {
+        var registerNumber = parseInt(matchResult[1], 16);
+        var immediateValue = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.skipNotEqualImmediate(registerNumber, immediateValue);
+        }
+    },
+    "^5(.)(.)0$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.skipEqual(
+                registerNumberX,
+                registerNumberY
+            );
+        }
+    },
+    "^6(.)(..)$": function (interpreter, matchResult) {
+        var registerNumber = parseInt(matchResult[1], 16);
+        var immediateValue = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.loadRegisterImmediate(
+                registerNumber,
+                immediateValue
+            );
+        }
+    },
+    "^7(.)(..)$": function (interpreter, matchResult) {
+        var registerNumber = parseInt(matchResult[1], 16);
+        var immediateValue = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.addRegisterImmediate(
+                registerNumber,
+                immediateValue
+            );
+        }
+    },
+    "^8(.)(.)0$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.loadRegister(
+                registerNumberX,
+                registerNumberY
+            );
+        }
+    },
+    "^8(.)(.)1$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.orRegister(
+                registerNumberX,
+                registerNumberY
+            );
+        }
+    },
+    "^8(.)(.)2$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.andRegister(
+                registerNumberX,
+                registerNumberY
+            );
+        }
+    },
+    "^8(.)(.)3$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.xorRegister(
+                registerNumberX,
+                registerNumberY
+            );
+        }
+    }
+};
 
 
 /**
- * Disassemble the given ROM binary and return a list of numeric instructions
- * @param {File || string} rom - A File Object containing the ROM data or
- *     a URL to such a file.
- * @param {function} callback - Callback which will be called with the
- *     disassembled data
+ * Transform integer opcodes into zero-padded 4 character hex strings
+ * @param {number} instruction - Numeric opcode value
  */
-function disassemble(rom, callback) {
-    jBinary.load(rom, TYPESET, function (err, binary) {
-        var instructions = binary.readAll();
-        if(err) {
-            callback(null);
-        } else {
-            callback(instructions);
-        }
-    });
-}
-
-
 function instructionToHexString(instruction) {
     var hexString = instruction.toString(16);
     var numberMissingChars = 4 - hexString.length;
@@ -43,6 +142,6 @@ function instructionToHexString(instruction) {
 
 
 module.exports = {
-    disassemble: disassemble,
+    INSTRUCTION_MAP: INSTRUCTION_MAP,
     instructionToHexString: instructionToHexString
 };

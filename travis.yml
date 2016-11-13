@@ -1,0 +1,4 @@
+language: JAVASCRIPT
+script:
+ - make
+ - make test

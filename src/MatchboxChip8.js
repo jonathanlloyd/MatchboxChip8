@@ -36,14 +36,7 @@ var log = require('loglevel').getLogger("matchboxchip8");
 var disassembly = require("./disassembly");
 var rom_loading = require("./rom_loading");
 
-var DEBUG_MODE = true;
 var PROGRAM_ADDRESS = 0x200;
-
-if (DEBUG_MODE) {
-    log.setLevel("debug");
-} else {
-    log.setLevel("warn");
-}
 
 
 /**
@@ -52,7 +45,15 @@ if (DEBUG_MODE) {
  * @param {CanvasRenderingContext2D} context - The 2D canvas drawing
  *     context used to draw the screen for the VM.
  */
-var Interpreter = function () {
+var Interpreter = function (debugMode) {
+    debugMode = debugMode || false;
+
+    if (debugMode) {
+        log.setLevel("debug");
+    } else {
+        log.setLevel("warn");
+    }
+
     this.display = new Array(2048);
 
     /*

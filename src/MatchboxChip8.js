@@ -433,7 +433,7 @@ Interpreter.prototype.addRegister = function (
     var carryBit = 0;
     if (result > 255) {
         log.debug("ADD overflowed. Setting carry bit.");
-        result = 255;
+        result = result & 255;
         carryBit = 1;
     }
 

@@ -83,14 +83,7 @@ var MatchboxChip8 =
 	var disassembly = __webpack_require__(2);
 	var rom_loading = __webpack_require__(3);
 
-	var DEBUG_MODE = true;
 	var PROGRAM_ADDRESS = 0x200;
-
-	if (DEBUG_MODE) {
-	    log.setLevel("debug");
-	} else {
-	    log.setLevel("warn");
-	}
 
 
 	/**
@@ -99,7 +92,15 @@ var MatchboxChip8 =
 	 * @param {CanvasRenderingContext2D} context - The 2D canvas drawing
 	 *     context used to draw the screen for the VM.
 	 */
-	var Interpreter = function () {
+	var Interpreter = function (debugMode) {
+	    debugMode = debugMode || false;
+
+	    if (debugMode) {
+	        log.setLevel("debug");
+	    } else {
+	        log.setLevel("warn");
+	    }
+
 	    this.display = new Array(2048);
 
 	    /*
@@ -479,7 +480,7 @@ var MatchboxChip8 =
 	    var carryBit = 0;
 	    if (result > 255) {
 	        log.debug("ADD overflowed. Setting carry bit.");
-	        result = 255;
+	        result = result & 255;
 	        carryBit = 1;
 	    }
 

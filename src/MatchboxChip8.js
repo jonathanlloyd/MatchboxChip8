@@ -614,6 +614,32 @@ Interpreter.prototype.shrRegister = function (registerNumberX) {
     this.registers[0xF] = overflowBit;
 };
 
+/**
+ * 8xy7 - SUBN Vx, Vy
+ * Set Vx = Vy - Vx, set VF = NOT borrow.
+ * 
+ * If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from
+ * Vy, and the results stored in Vx.
+ */
+Interpreter.prototype.subnRegister = function (
+        registerNumberX,
+        registerNumberY
+    ) {
+    log.debug(
+        "SUBing the value of register V",
+        registerNumberY,
+        " from register V",
+        registerNumberX
+    );
+    var registerXValue = this.registers[registerNumberX];
+    var registerYValue = this.registers[registerNumberY];
+    var result = Math.abs(registerYValue - registerXValue);
+    var borrowBit = registerYValue <= registerXValue;
+
+    this.registers[registerNumberX] = result;
+    this.registers[0xF] = borrowBit;
+};
+
 
 module.exports = {
     Interpreter: Interpreter,

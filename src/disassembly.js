@@ -145,6 +145,15 @@ var INSTRUCTION_MAP = {
                 registerNumberY
             );
         };
+    },
+    "^8(.)(.)6$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.shrRegister(
+                registerNumberX
+            );
+        };
     }
 };
 

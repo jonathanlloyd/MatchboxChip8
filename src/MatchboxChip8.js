@@ -168,6 +168,7 @@ Interpreter.prototype.step = function() {
     log.debug("Fetching next instruction @ 0x" + this.PC.toString(16));
     var rawInstruction = this.RAM[this.PC];
     // Decode instruction
+    log.debug("Decoding instruction 0x" + rawInstruction.toString(16));
     var decodedInstruction = this.decodeInstruction(rawInstruction);
     // Execute instruction
     if(decodedInstruction !== null) {

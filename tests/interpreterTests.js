@@ -742,5 +742,61 @@ describe('interpreter', function() {
         );
     });
 
+    it('9xy0 - should skip if r\'x != r\'y (equal)', function() {
+        var instruction = 0x9A10;
+        var registerXNum = 0xA;
+        var registerYNum = 0x1;
+        var registerXValue = 0x1;
+        var registerYValue = 0x1;
+
+        var testProgram = [
+            instruction
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        var oldPC = interpreter.PC;
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            oldPC + 1,
+            'Program counter should increase by 1'
+        );
+    });
+
+    it('9xy0 - should skip if r\'x != r\'y (not equal)', function() {
+        var instruction = 0x9A10;
+        var registerXNum = 0xA;
+        var registerYNum = 0x1;
+        var registerXValue = 0x2;
+        var registerYValue = 0x1;
+
+        var testProgram = [
+            instruction
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter(true);
+        var oldPC = interpreter.PC;
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            oldPC + 2,
+            'Program counter should increase by 2'
+        );
+    });
+
 });
 

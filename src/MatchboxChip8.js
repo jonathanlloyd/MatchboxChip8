@@ -661,6 +661,45 @@ Interpreter.prototype.shlRegister = function (registerNumberX) {
     this.registers[0xF] = overflowBit;
 };
 
+/**
+ * 9xy0 - SNE Vx, Vy
+ * Skip next instruction if Vx != Vy.
+ * 
+ * The values of Vx and Vy are compared, and if they are not equal, the
+ * program counter is increased by 2.
+ */
+Interpreter.prototype.skipNotEqual = function (
+      registerNumberX,
+      registerNumberY
+  ) {
+    log.debug("Skip Not Equal");
+
+    var registerXValue = this.registers[registerNumberX];
+    var registerYValue = this.registers[registerNumberY];
+    var shouldSkip = registerXValue !== registerYValue;
+
+    if(shouldSkip) {
+        log.debug(
+            'Register V',
+            registerNumberX.toString(16),
+            ' does not equal ',
+            'Register V',
+            registerNumberY.toString(16),
+            ' - skipping next instruction'
+        );
+        this.PC += 1;
+    } else {
+        log.debug(
+            'Register V',
+            registerNumberX.toString(16),
+            ' equals ',
+            'Register V',
+            registerNumberY.toString(16),
+            ' - not skipping next instruction'
+        );
+    }
+};
+
 
 module.exports = {
     Interpreter: Interpreter,

@@ -48,7 +48,7 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~8xyE - SHL Vx {, Vy}~~
 
-9xy0 - SNE Vx, Vy
+~~9xy0 - SNE Vx, Vy~~
 
 Annn - LD I, addr
 

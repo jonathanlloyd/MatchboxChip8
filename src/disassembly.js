@@ -192,6 +192,13 @@ var INSTRUCTION_MAP = {
         return function () {
             interpreter.setI(value);
         };
+    },
+    "^b(...)$": function (interpreter, matchResult) {
+        var value = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.jumpPlus(value);
+        };
     }
 };
 

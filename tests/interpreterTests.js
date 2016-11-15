@@ -820,5 +820,29 @@ describe('interpreter', function() {
         );
     });
 
+    it('Bnnn - should jump to r\'0 + nnn', function() {
+        var instruction = 0xB123;
+        var value = 0x123;
+        var register0Value = 0x2;
+
+        var testProgram = [
+            instruction
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.registers[0] = register0Value;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            register0Value + value,
+            'PC should equal register 0 value + nnn value'
+        );
+    });
+
 });
 

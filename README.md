@@ -50,9 +50,9 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~9xy0 - SNE Vx, Vy~~
 
-Annn - LD I, addr
+~~Annn - LD I, addr~~
 
-Bnnn - JP V0, addr
+~~Bnnn - JP V0, addr~~
 
 Cxkk - RND Vx, byte
 

@@ -715,6 +715,27 @@ Interpreter.prototype.setI = function (value) {
     this.I = value;
 };
 
+/**
+ * Bnnn - JP V0, addr
+ * Jump to location nnn + V0.
+ * 
+ * The program counter is set to nnn plus the value of V0.
+ */
+Interpreter.prototype.jumpPlus = function (value) {
+    var register0Value = this.registers[0x0];
+    var jumpAddress = register0Value + value;
+
+    log.debug(
+        'Jumping to V0',
+        '(' + register0Value + ')',
+        '+',
+        value,
+        '(=' + jumpAddress + ')'
+    );
+
+    this.PC = jumpAddress - 1;
+};
+
 
 module.exports = {
     Interpreter: Interpreter,

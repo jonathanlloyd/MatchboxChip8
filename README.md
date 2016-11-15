@@ -40,7 +40,7 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~8xy4 - ADD Vx, Vy~~
 
-8xy5 - SUB Vx, Vy
+~~8xy5 - SUB Vx, Vy~~
 
 8xy6 - SHR Vx {, Vy}
 

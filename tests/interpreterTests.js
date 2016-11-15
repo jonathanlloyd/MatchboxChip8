@@ -489,5 +489,71 @@ describe('interpreter', function() {
             'Register 0xF value (carry bit) should equal 1'
         );
     });
+
+    it('8xy5 - should SUB register y from r\' x (no borrow)', function() {
+        var instruction = 0x8015;
+        var registerXNum = 0x0;
+        var registerYNum = 0x1;
+        var registerXValue = 0x05;
+        var registerYValue = 0x04;
+
+        var testProgram = [
+            instruction
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.registers[registerXNum],
+            0x01,
+            'Register X value should equal rx - ry'
+        );
+
+        assert.equal(
+            interpreter.registers[0xF],
+            0,
+            'Register 0xF value (borrow bit) should equal 0'
+        );
+    });
+
+    it('8xy5 - should SUB register y from r\' x (borrow)', function() {
+        var instruction = 0x8015;
+        var registerXNum = 0x0;
+        var registerYNum = 0x1;
+        var registerXValue = 0x04;
+        var registerYValue = 0x05;
+
+        var testProgram = [
+            instruction
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.registers[registerXNum],
+            0x01,
+            'Register X value should equal abs(rx - ry)'
+        );
+
+        assert.equal(
+            interpreter.registers[0xF],
+            1,
+            'Register 0xF value (borrow bit) should equal 0'
+        );
+    });
 });
 

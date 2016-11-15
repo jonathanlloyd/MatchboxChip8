@@ -441,6 +441,25 @@ Interpreter.prototype.addRegister = function (
     this.registers[0xF] = carryBit;
 };
 
+Interpreter.prototype.subRegister = function (
+        registerNumberX,
+        registerNumberY
+    ) {
+    log.debug(
+        "SUBing the value of register V",
+        registerNumberY,
+        " from register V",
+        registerNumberX
+    );
+    var registerXValue = this.registers[registerNumberX];
+    var registerYValue = this.registers[registerNumberY];
+    var result = Math.abs(registerYValue - registerXValue);
+    var borrowBit = registerYValue > registerXValue;
+
+    this.registers[registerNumberX] = result;
+    this.registers[0xF] = borrowBit;
+};
+
 
 module.exports = {
     Interpreter: Interpreter,

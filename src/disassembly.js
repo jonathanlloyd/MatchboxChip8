@@ -134,6 +134,17 @@ var INSTRUCTION_MAP = {
                 registerNumberY
             );
         };
+    },
+    "^8(.)(.)5$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16),
+            registerNumberY = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.subRegister(
+                registerNumberX,
+                registerNumberY
+            );
+        };
     }
 };
 

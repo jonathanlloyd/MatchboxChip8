@@ -166,6 +166,15 @@ var INSTRUCTION_MAP = {
             );
         };
     },
+    "^8(.)(.)e$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.shlRegister(
+                registerNumberX
+            );
+        };
+    },
 };
 
 

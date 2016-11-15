@@ -640,6 +640,27 @@ Interpreter.prototype.subnRegister = function (
     this.registers[0xF] = borrowBit;
 };
 
+/**
+ * 8xyE - SHL Vx {, Vy}
+ * Set Vx = Vx SHL 1.
+ * 
+ * If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to
+ * 0. Then Vx is multiplied by 2.
+ */
+Interpreter.prototype.shlRegister = function (registerNumberX) {
+    log.debug(
+        "Bit shifting the value of register V",
+        registerNumberX,
+        'left.'
+    );
+    var registerXValue = this.registers[registerNumberX];
+    var result = (registerXValue << 1) & 255;
+    var overflowBit = (registerXValue & (1 << 7)) === 128;
+
+    this.registers[registerNumberX] = result;
+    this.registers[0xF] = overflowBit;
+};
+
 
 module.exports = {
     Interpreter: Interpreter,

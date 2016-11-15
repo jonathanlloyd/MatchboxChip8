@@ -681,5 +681,66 @@ describe('interpreter', function() {
             'Register 0xF value (borrow bit) should equal 0'
         );
     });
+
+    it('8xyE - should bit shift left register x (no overflow)', function() {
+        var instruction = 0x801e;
+        var registerXNum = 0x0;
+        var registerXValue = 0x7f;
+
+        var testProgram = [
+            instruction
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.registers[registerXNum] = registerXValue;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.registers[registerXNum],
+            0xfe,
+            'Register X value should equal 0x3f'
+        );
+
+        assert.equal(
+            interpreter.registers[0xF],
+            0,
+            'Register 0xF value (overflow bit) should equal 0'
+        );
+    });
+
+    it('8xyE - should bit shift left register x (overflow)', function() {
+        var instruction = 0x801e;
+        var registerXNum = 0x0;
+        var registerXValue = 0x80;
+
+        var testProgram = [
+            instruction
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.registers[registerXNum] = registerXValue;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.registers[registerXNum],
+            0x00,
+            'Register X value should equal 0x40'
+        );
+
+        assert.equal(
+            interpreter.registers[0xF],
+            1,
+            'Register 0xF value (overflow bit) should equal 1'
+        );
+    });
+
 });
 

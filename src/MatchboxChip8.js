@@ -183,6 +183,7 @@ Interpreter.prototype.step = function() {
  * interpreter function with the necessary parameters embedded in the
  * closure.
  * @param {Number} rawInstruction - Numeric representation of an instruction
+ * @return {Function} insruction - Callable instruction object
  */
 Interpreter.prototype.decodeInstruction = function(rawInstruction) {
     var hexString = disassembly.instructionToHexString(rawInstruction);
@@ -203,25 +204,57 @@ Interpreter.prototype.decodeInstruction = function(rawInstruction) {
     return null;
 };
 
+/**
+ * Get the pixel value (1 or 0) from a given screen coordinate
+ * @param {Number} x - The X coordinate for the desired pixel
+ * @param {Number} y - The Y coordinate for the desired pixel
+ * @return {Number} value - The value of the desired pixel
+ */
 Interpreter.prototype.getPixel = function (x, y) {
     return this.display[(64 * y) + x];
 };
 
+/**
+ * Set the pixel value (1 or 0) for a given screen coordinate
+ * @param {Number} x - The X coordinate for the desired pixel
+ * @param {Number} y - The Y coordinate for the desired pixel
+ * @param {Number} value - The value to give the desired pixel (0 if 0,
+ *   1 otherwise).
+ */
 Interpreter.prototype.setPixel = function (x, y, value) {
-    this.display[(64 * y) + x] = value;
+    this.display[(64 * y) + x] = value === 0 ? 0 : 1;
 };
 
+/**
+ * Push a given value onto the stack
+ *   (Put value on the top of the stack and increase the stack pointer)
+ * @param {Number} value - The value to push onto the stack
+ */
 Interpreter.prototype.pushStack = function (value) {
     this.SP += 1;
     this.stack[this.SP] = value;
 };
 
+/**
+ * Pop a given value from the stack
+ *   (Decrease the stack pointer and return the value on the top of the stack)
+ * @return {Number} value - The value to popped from the stack
+ */
 Interpreter.prototype.popStack = function () {
     var value = this.stack[this.SP];
     this.SP -= 1;
     return value;
 };
 
+/*
+ * Instruction methods
+ * ===================
+ */
+
+/**
+ * 00E0 - CLS
+ * Clear the display.
+ */
 Interpreter.prototype.clearDisplay = function () {
     log.debug("Clearing display");
     for(var i = 0; i < this.display.length; i += 1) {
@@ -229,22 +262,49 @@ Interpreter.prototype.clearDisplay = function () {
     }
 };
 
+/**
+ * 00EE - RET
+ * Return from a subroutine.
+ *
+ * The interpreter sets the program counter to the address at the top of the
+ * stack, then subtracts 1 from the stack pointer.
+ */
 Interpreter.prototype.subroutineReturn = function () {
     log.debug("Returning from subroutine");
     this.PC = this.popStack() - 1;
 };
 
+/**
+ * 1nnn - JP addr
+ * Jump to location nnn.
+ * 
+ * The interpreter sets the program counter to nnn.
+ */
 Interpreter.prototype.jump = function (jumpAddress) {
     log.debug("Jumping to 0x", jumpAddress.toString(16));
     this.PC = jumpAddress - 1;
 };
 
+/**
+ * 2nnn - CALL addr
+ * Call subroutine at nnn.
+ * 
+ * The interpreter increments the stack pointer, then puts the current PC on
+ * the top of the stack. The PC is then set to nnn.
+ */
 Interpreter.prototype.call = function (callAddress) {
     log.debug("Calling subroutine at 0x", callAddress.toString(16));
     this.pushStack(this.PC);
     this.PC = callAddress - 1;
 };
 
+/**
+ * 3xkk - SE Vx, byte
+ * Skip next instruction if Vx = kk.
+ * 
+ * The interpreter compares register Vx to kk, and if they are equal,
+ * increments the program counter by 2.
+ */
 Interpreter.prototype.skipEqualImmediate = function (
       registerNumber,
       immediateValue
@@ -272,6 +332,13 @@ Interpreter.prototype.skipEqualImmediate = function (
     }
 };
 
+/**
+ * 4xkk - SNE Vx, byte
+ * Skip next instruction if Vx != kk.
+ * 
+ * The interpreter compares register Vx to kk, and if they are not equal,
+ * increments the program counter by 2.
+ */
 Interpreter.prototype.skipNotEqualImmediate = function (
       registerNumber,
       immediateValue
@@ -299,6 +366,13 @@ Interpreter.prototype.skipNotEqualImmediate = function (
     }
 };
 
+/**
+ * 5xy0 - SE Vx, Vy
+ * Skip next instruction if Vx = Vy.
+ * 
+ * The interpreter compares register Vx to register Vy, and if they are equal,
+ * increments the program counter by 2.
+ */
 Interpreter.prototype.skipEqual = function (
       registerNumberX,
       registerNumberY
@@ -331,6 +405,12 @@ Interpreter.prototype.skipEqual = function (
     }
 };
 
+/**
+ * 6xkk - LD Vx, byte
+ * Set Vx = kk.
+ * 
+ * The interpreter puts the value kk into register Vx.
+ */
 Interpreter.prototype.loadRegisterImmediate = function (
         registerNumber,
         immediateValue
@@ -344,6 +424,12 @@ Interpreter.prototype.loadRegisterImmediate = function (
     this.registers[registerNumber] = immediateValue;
 };
 
+/**
+ * 7xkk - ADD Vx, byte
+ * Set Vx = Vx + kk.
+ * 
+ * Adds the value kk to the value of register Vx and stores the result in Vx.
+ */
 Interpreter.prototype.addRegisterImmediate = function (
         registerNumber,
         immediateValue
@@ -357,6 +443,12 @@ Interpreter.prototype.addRegisterImmediate = function (
     this.registers[registerNumber] += immediateValue;
 };
 
+/**
+ * 8xy0 - LD Vx, Vy
+ * Set Vx = Vy.
+ * 
+ * Stores the value of register Vy in register Vx.
+ */
 Interpreter.prototype.loadRegister = function (
         registerNumberX,
         registerNumberY
@@ -367,10 +459,18 @@ Interpreter.prototype.loadRegister = function (
         " into register V",
         registerNumberX
     );
-    var registerYValue = this.registers[registerNumberY];
-    this.registers[registerNumberX] = registerYValue;
+    this.registers[registerNumberX] = this.registers[registerNumberY];
 };
 
+/**
+ * 8xy1 - OR Vx, Vy
+ * Set Vx = Vx OR Vy.
+ * 
+ * Performs a bitwise OR on the values of Vx and Vy, then stores the result in
+ * Vx. A bitwise OR compares the corrseponding bits from two values, and if 
+ * either bit is 1, then the same bit in the result is also 1.
+ * Otherwise, it is 0. 
+ */
 Interpreter.prototype.orRegister = function (
         registerNumberX,
         registerNumberY
@@ -386,6 +486,15 @@ Interpreter.prototype.orRegister = function (
     this.registers[registerNumberX] = registerYValue | registerXValue;
 };
 
+/**
+ * 8xy2 - AND Vx, Vy
+ * Set Vx = Vx AND Vy.
+ * 
+ * Performs a bitwise AND on the values of Vx and Vy, then stores the result
+ * in Vx. A bitwise AND compares the corrseponding bits from two values, and
+ * if both bits are 1, then the same bit in the result is also 1.
+ * Otherwise, it is 0. 
+ */
 Interpreter.prototype.andRegister = function (
         registerNumberX,
         registerNumberY
@@ -401,6 +510,15 @@ Interpreter.prototype.andRegister = function (
     this.registers[registerNumberX] = registerYValue & registerXValue;
 };
 
+/**
+ * 8xy3 - XOR Vx, Vy
+ * Set Vx = Vx XOR Vy.
+ * 
+ * Performs a bitwise exclusive OR on the values of Vx and Vy, then stores the
+ * result in Vx. An exclusive OR compares the corrseponding bits from two
+ * values, and if the bits are not both the same, then the corresponding bit
+ * in the result is set to 1. Otherwise, it is 0.
+ */
 Interpreter.prototype.xorRegister = function (
         registerNumberX,
         registerNumberY
@@ -416,6 +534,14 @@ Interpreter.prototype.xorRegister = function (
     this.registers[registerNumberX] = registerYValue ^ registerXValue;
 };
 
+/**
+ * 8xy4 - ADD Vx, Vy
+ * Set Vx = Vx + Vy, set VF = carry.
+ * 
+ * The values of Vx and Vy are added together. If the result is greater than
+ * 8 bits (i.e., > 255,) VF is set to 1, otherwise 0. Only the lowest 8 bits
+ * of the result are kept, and stored in Vx.
+ */
 Interpreter.prototype.addRegister = function (
         registerNumberX,
         registerNumberY
@@ -441,6 +567,13 @@ Interpreter.prototype.addRegister = function (
     this.registers[0xF] = carryBit;
 };
 
+/**
+ * 8xy5 - SUB Vx, Vy
+ * Set Vx = Vx - Vy, set VF = NOT borrow.
+ * 
+ * If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from 
+ * Vx, and the results stored in Vx.
+ */
 Interpreter.prototype.subRegister = function (
         registerNumberX,
         registerNumberY

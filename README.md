@@ -42,11 +42,11 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~8xy5 - SUB Vx, Vy~~
 
-8xy6 - SHR Vx {, Vy}
+~~8xy6 - SHR Vx {, Vy}~~
 
-8xy7 - SUBN Vx, Vy
+~~8xy7 - SUBN Vx, Vy~~
 
-8xyE - SHL Vx {, Vy}
+~~8xyE - SHL Vx {, Vy}~~
 
 9xy0 - SNE Vx, Vy
 

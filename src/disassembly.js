@@ -185,6 +185,13 @@ var INSTRUCTION_MAP = {
                 registerNumberY
             );
         };
+    },
+    "^a(...)$": function (interpreter, matchResult) {
+        var value = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.setI(value);
+        };
     }
 };
 

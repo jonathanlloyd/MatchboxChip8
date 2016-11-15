@@ -700,6 +700,21 @@ Interpreter.prototype.skipNotEqual = function (
     }
 };
 
+/**
+ * Annn - LD I, addr
+ * Set I = nnn.
+ * 
+ * The value of register I is set to nnn.
+ */
+Interpreter.prototype.setI = function (value) {
+    log.debug(
+        "Setting register I to",
+        "0x" + value.toString(16)
+    );
+
+    this.I = value;
+};
+
 
 module.exports = {
     Interpreter: Interpreter,

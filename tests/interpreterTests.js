@@ -781,7 +781,7 @@ describe('interpreter', function() {
             instruction
         ];
 
-        var interpreter = new MatchboxChip8.Interpreter(true);
+        var interpreter = new MatchboxChip8.Interpreter();
         var oldPC = interpreter.PC;
         interpreter.registers[registerXNum] = registerXValue;
         interpreter.registers[registerYNum] = registerYValue;
@@ -795,6 +795,28 @@ describe('interpreter', function() {
             interpreter.PC,
             oldPC + 2,
             'Program counter should increase by 2'
+        );
+    });
+
+    it('Annn - should set ri to nnn', function() {
+        var instruction = 0xA123;
+        var value = 0x123;
+
+        var testProgram = [
+            instruction
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.I,
+            value,
+            'Register I should equal value'
         );
     });
 

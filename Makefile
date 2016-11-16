@@ -8,6 +8,8 @@ build:
 clean:
 	@rm -rf ./dist/*
 
+check: test
+
 test:
 	@npm test
 

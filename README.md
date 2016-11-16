@@ -54,7 +54,7 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~Bnnn - JP V0, addr~~
 
-Cxkk - RND Vx, byte
+~~Cxkk - RND Vx, byte~~
 
 Dxyn - DRW Vx, Vy, nibble
 

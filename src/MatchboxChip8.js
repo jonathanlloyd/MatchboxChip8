@@ -166,7 +166,9 @@ Interpreter.prototype.loadInstructions = function (instructions) {
 Interpreter.prototype.step = function() {
     // Fetch instruction
     log.debug("Fetching next instruction @ 0x" + this.PC.toString(16));
-    var rawInstruction = this.RAM[this.PC];
+    var highByte = this.RAM[this.PC];
+    var lowByte = this.RAM[this.PC + 1];
+    var rawInstruction = (highByte << 8) | lowByte;
     // Decode instruction
     log.debug("Decoding instruction 0x" + rawInstruction.toString(16));
     var decodedInstruction = this.decodeInstruction(rawInstruction);
@@ -175,7 +177,7 @@ Interpreter.prototype.step = function() {
         decodedInstruction();
     }
     // Increase program counter
-    this.PC += 1;
+    this.PC += 2;
 };
 
 
@@ -272,7 +274,7 @@ Interpreter.prototype.clearDisplay = function () {
  */
 Interpreter.prototype.subroutineReturn = function () {
     log.debug("Returning from subroutine");
-    this.PC = this.popStack() - 1;
+    this.PC = this.popStack() - 2;
 };
 
 /**
@@ -283,7 +285,7 @@ Interpreter.prototype.subroutineReturn = function () {
  */
 Interpreter.prototype.jump = function (jumpAddress) {
     log.debug("Jumping to 0x", jumpAddress.toString(16));
-    this.PC = jumpAddress - 1;
+    this.PC = jumpAddress - 2;
 };
 
 /**
@@ -296,7 +298,7 @@ Interpreter.prototype.jump = function (jumpAddress) {
 Interpreter.prototype.call = function (callAddress) {
     log.debug("Calling subroutine at 0x", callAddress.toString(16));
     this.pushStack(this.PC);
-    this.PC = callAddress - 1;
+    this.PC = callAddress - 2;
 };
 
 /**
@@ -321,7 +323,7 @@ Interpreter.prototype.skipEqualImmediate = function (
             immediateValue.toString(16),
             ' - skipping next instruction'
         );
-        this.PC += 1;
+        this.PC += 2;
     } else {
         log.debug(
             'Register V',
@@ -355,7 +357,7 @@ Interpreter.prototype.skipNotEqualImmediate = function (
             immediateValue.toString(16),
             ' - skipping next instruction'
         );
-        this.PC += 1;
+        this.PC += 2;
     } else {
         log.debug(
             'Register V',
@@ -393,7 +395,7 @@ Interpreter.prototype.skipEqual = function (
             registerNumberY.toString(16),
             ' - skipping next instruction'
         );
-        this.PC += 1;
+        this.PC += 2;
     } else {
         log.debug(
             'Register V',
@@ -688,7 +690,7 @@ Interpreter.prototype.skipNotEqual = function (
             registerNumberY.toString(16),
             ' - skipping next instruction'
         );
-        this.PC += 1;
+        this.PC += 2;
     } else {
         log.debug(
             'Register V',
@@ -734,7 +736,7 @@ Interpreter.prototype.jumpPlus = function (value) {
         '(=' + jumpAddress + ')'
     );
 
-    this.PC = jumpAddress - 1;
+    this.PC = jumpAddress - 2;
 };
 
 

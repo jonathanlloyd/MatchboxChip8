@@ -3,17 +3,16 @@ var MatchboxChip8 = require('../src/MatchboxChip8');
 
 describe('interpreter', function() {
     it('00E0 - should clear the display', function() {
-        var instruction = 0x00E0;
-
         var testProgram = [
-            instruction
+            0x00,
+            0xe0,
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.setPixel(0, 0, 1)
         interpreter.loadInstructions(testProgram);
 
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -26,11 +25,11 @@ describe('interpreter', function() {
     });
 
     it('00EE - should return from subroutine', function() {
-        var instruction = 0x00EE;
         var testReturnAddress = 100;
 
         var testProgram = [
-            instruction
+            0x00,
+            0xee,
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -40,7 +39,7 @@ describe('interpreter', function() {
         var oldSP = interpreter.SP;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -57,17 +56,17 @@ describe('interpreter', function() {
     });
 
     it('1nnn - should jump to address', function() {
-        var instruction = 0x1123;
         var testTargetAddress = 0x123;
 
         var testProgram = [
-            instruction
+            0x11,
+            0x23
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.loadInstructions(testProgram);
 
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -79,11 +78,11 @@ describe('interpreter', function() {
     });
 
     it('2nnn - should call subroutine', function() {
-        var instruction = 0x2123;
         var testTargetAddress = 0x123;
 
         var testProgram = [
-            instruction
+            0x21,
+            0x23
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -92,7 +91,7 @@ describe('interpreter', function() {
         var oldPC = interpreter.PC;
         var oldSP = interpreter.SP;
 
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -114,12 +113,12 @@ describe('interpreter', function() {
     });
 
     it('3xkk - should skip if immediate value equal (equal)', function() {
-        var instruction = 0x3A10;
         var testRegisterNumber = 0xA;
         var testOperand = 0x10;
 
         var testProgram = [
-            instruction
+            0x3a,
+            0x10
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -127,24 +126,24 @@ describe('interpreter', function() {
         interpreter.registers[testRegisterNumber] = testOperand;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
         assert.equal(
             interpreter.PC,
-            oldPC + 2,
-            'Program counter should increase by 2'
+            oldPC + 4,
+            'Program counter should increase by 4'
         );
     });
 
     it('3xkk - should skip if immediate value equal (not equal)', function() {
-        var instruction = 0x3A10;
         var testRegisterNumber = 0xA;
         var testOperand = 0x10;
 
         var testProgram = [
-            instruction
+            0x3a,
+            0x10
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -152,57 +151,7 @@ describe('interpreter', function() {
         interpreter.registers[testRegisterNumber] = testOperand + 1;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
-            interpreter.step();
-        };
-
-        assert.equal(
-            interpreter.PC,
-            oldPC + 1,
-            'Program counter should increase by 1'
-        );
-    });
-
-    it('4xkk - should skip if immediate value not equal (equal)', function() {
-        var instruction = 0x4A10;
-        var testRegisterNumber = 0xA;
-        var testOperand = 0x10;
-
-        var testProgram = [
-            instruction
-        ];
-
-        var interpreter = new MatchboxChip8.Interpreter();
-        var oldPC = interpreter.PC;
-        interpreter.registers[testRegisterNumber] = testOperand;
-
-        interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
-            interpreter.step();
-        };
-
-        assert.equal(
-            interpreter.PC,
-            oldPC + 1,
-            'Program counter should increase by 1'
-        );
-    });
-
-    it('4xkk - should skip if i\' value not equal (not equal)', function() {
-        var instruction = 0x4A10;
-        var testRegisterNumber = 0xA;
-        var testOperand = 0x10;
-
-        var testProgram = [
-            instruction
-        ];
-
-        var interpreter = new MatchboxChip8.Interpreter();
-        var oldPC = interpreter.PC;
-        interpreter.registers[testRegisterNumber] = testOperand + 1;
-
-        interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -213,14 +162,64 @@ describe('interpreter', function() {
         );
     });
 
+    it('4xkk - should skip if immediate value not equal (equal)', function() {
+        var testRegisterNumber = 0xA;
+        var testOperand = 0x10;
+
+        var testProgram = [
+            0x4a,
+            0x10
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        var oldPC = interpreter.PC;
+        interpreter.registers[testRegisterNumber] = testOperand;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            oldPC + 2,
+            'Program counter should increase by 2'
+        );
+    });
+
+    it('4xkk - should skip if i\' value not equal (not equal)', function() {
+        var testRegisterNumber = 0xA;
+        var testOperand = 0x10;
+
+        var testProgram = [
+            0x4a,
+            0x10
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        var oldPC = interpreter.PC;
+        interpreter.registers[testRegisterNumber] = testOperand + 1;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            oldPC + 4,
+            'Program counter should increase by 4'
+        );
+    });
+
     it('5xy0 - should skip if register value equal (equal)', function() {
-        var instruction = 0x5A10;
         var registerXNum = 0xA;
         var registerYNum = 0x1;
         var registerXValue = registerYValue = 0x1;
 
         var testProgram = [
-            instruction
+            0x5a,
+            0x10
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -229,26 +228,26 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
         assert.equal(
             interpreter.PC,
-            oldPC + 2,
-            'Program counter should increase by 2'
+            oldPC + 4,
+            'Program counter should increase by 4'
         );
     });
 
     it('5xy0 - should skip if register value equal (not equal)', function() {
-        var instruction = 0x5A10;
         var registerXNum = 0xA;
         var registerYNum = 0x1;
         var registerXValue = 0x1;
         var registerYValue = 0x2;
 
         var testProgram = [
-            instruction
+            0x5a,
+            0x10
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -257,30 +256,30 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
         assert.equal(
             interpreter.PC,
-            oldPC + 1,
-            'Program counter should increase by 1'
+            oldPC + 2,
+            'Program counter should increase by 2'
         );
     });
 
     it('6xkk - should load byte into register', function() {
-        var instruction = 0x6011;
         var registerXNum = 0x0;
         var byteValue = 0x11;
 
         var testProgram = [
-            instruction
+            0x60,
+            0x11
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -292,20 +291,20 @@ describe('interpreter', function() {
     });
 
     it('7xkk - should add byte value to register', function() {
-        var instruction = 0x7011;
         var registerXNum = 0x0;
         var registerXValue = 0x1;
         var byteValue = 0x11;
 
         var testProgram = [
-            instruction
+            0x70,
+            0x11
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.registers[registerXNum] = registerXValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -317,14 +316,14 @@ describe('interpreter', function() {
     });
 
     it('8xy0 - should load register y into register x', function() {
-        var instruction = 0x8010;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0x0;
         var registerYValue = 0xA;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x10
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -332,7 +331,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -344,14 +343,14 @@ describe('interpreter', function() {
     });
 
     it('8xy1 - should OR register y into register x', function() {
-        var instruction = 0x8011;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0xA;
         var registerYValue = 0xB;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x11
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -359,7 +358,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -371,14 +370,14 @@ describe('interpreter', function() {
     });
 
     it('8xy2 - should AND register y into register x', function() {
-        var instruction = 0x8012;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0xA;
         var registerYValue = 0xB;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x12
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -386,7 +385,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -398,14 +397,14 @@ describe('interpreter', function() {
     });
 
     it('8xy3 - should XOR register y into register x', function() {
-        var instruction = 0x8013;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0xA;
         var registerYValue = 0xB;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x13
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -413,7 +412,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -425,14 +424,14 @@ describe('interpreter', function() {
     });
 
     it('8xy4 - should ADD register y into register x (no carry)', function() {
-        var instruction = 0x8014;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0x01;
         var registerYValue = 0x03;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x14
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -440,7 +439,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -458,14 +457,14 @@ describe('interpreter', function() {
     });
 
     it('8xy4 - should ADD register y into register x (carry)', function() {
-        var instruction = 0x8014;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0xFF;
         var registerYValue = 0x04;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x14
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -473,7 +472,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -491,14 +490,14 @@ describe('interpreter', function() {
     });
 
     it('8xy5 - should SUB register y from r\' x (no borrow)', function() {
-        var instruction = 0x8015;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0x05;
         var registerYValue = 0x04;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x15
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -506,7 +505,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -524,14 +523,14 @@ describe('interpreter', function() {
     });
 
     it('8xy5 - should SUB register y from r\' x (borrow)', function() {
-        var instruction = 0x8015;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0x04;
         var registerYValue = 0x05;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x15
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -539,7 +538,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -557,19 +556,19 @@ describe('interpreter', function() {
     });
 
     it('8xy6 - should bit shift right register x (no overflow)', function() {
-        var instruction = 0x8016;
         var registerXNum = 0x0;
         var registerXValue = 0x04;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x16
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.registers[registerXNum] = registerXValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -587,19 +586,19 @@ describe('interpreter', function() {
     });
 
     it('8xy6 - should bit shift right register x (overflow)', function() {
-        var instruction = 0x8016;
         var registerXNum = 0x0;
         var registerXValue = 0x05;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x16
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.registers[registerXNum] = registerXValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -617,14 +616,14 @@ describe('interpreter', function() {
     });
 
     it('8xy7 - should SUBN register y from r\' x (no borrow)', function() {
-        var instruction = 0x8017;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0x05;
         var registerYValue = 0x04;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x17
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -632,7 +631,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -650,14 +649,14 @@ describe('interpreter', function() {
     });
 
     it('8xy7 - should SUBN register y from r\' x (borrow)', function() {
-        var instruction = 0x8017;
         var registerXNum = 0x0;
         var registerYNum = 0x1;
         var registerXValue = 0x04;
         var registerYValue = 0x05;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x17
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -665,7 +664,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -683,19 +682,19 @@ describe('interpreter', function() {
     });
 
     it('8xyE - should bit shift left register x (no overflow)', function() {
-        var instruction = 0x801e;
         var registerXNum = 0x0;
         var registerXValue = 0x7f;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x1e
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.registers[registerXNum] = registerXValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -713,19 +712,19 @@ describe('interpreter', function() {
     });
 
     it('8xyE - should bit shift left register x (overflow)', function() {
-        var instruction = 0x801e;
         var registerXNum = 0x0;
         var registerXValue = 0x80;
 
         var testProgram = [
-            instruction
+            0x80,
+            0x1e
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.registers[registerXNum] = registerXValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -743,14 +742,14 @@ describe('interpreter', function() {
     });
 
     it('9xy0 - should skip if r\'x != r\'y (equal)', function() {
-        var instruction = 0x9A10;
         var registerXNum = 0xA;
         var registerYNum = 0x1;
         var registerXValue = 0x1;
         var registerYValue = 0x1;
 
         var testProgram = [
-            instruction
+            0x9a,
+            0x10
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
@@ -759,35 +758,7 @@ describe('interpreter', function() {
         interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
-            interpreter.step();
-        };
-
-        assert.equal(
-            interpreter.PC,
-            oldPC + 1,
-            'Program counter should increase by 1'
-        );
-    });
-
-    it('9xy0 - should skip if r\'x != r\'y (not equal)', function() {
-        var instruction = 0x9A10;
-        var registerXNum = 0xA;
-        var registerYNum = 0x1;
-        var registerXValue = 0x2;
-        var registerYValue = 0x1;
-
-        var testProgram = [
-            instruction
-        ];
-
-        var interpreter = new MatchboxChip8.Interpreter();
-        var oldPC = interpreter.PC;
-        interpreter.registers[registerXNum] = registerXValue;
-        interpreter.registers[registerYNum] = registerYValue;
-
-        interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -798,18 +769,46 @@ describe('interpreter', function() {
         );
     });
 
+    it('9xy0 - should skip if r\'x != r\'y (not equal)', function() {
+        var registerXNum = 0xA;
+        var registerYNum = 0x1;
+        var registerXValue = 0x2;
+        var registerYValue = 0x1;
+
+        var testProgram = [
+            0x9a,
+            0x10
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        var oldPC = interpreter.PC;
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            oldPC + 4,
+            'Program counter should increase by 4'
+        );
+    });
+
     it('Annn - should set ri to nnn', function() {
-        var instruction = 0xA123;
         var value = 0x123;
 
         var testProgram = [
-            instruction
+            0xa1,
+            0x23
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 
@@ -821,19 +820,19 @@ describe('interpreter', function() {
     });
 
     it('Bnnn - should jump to r\'0 + nnn', function() {
-        var instruction = 0xB123;
         var value = 0x123;
         var register0Value = 0x2;
 
         var testProgram = [
-            instruction
+            0xb1,
+            0x23
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.registers[0] = register0Value;
 
         interpreter.loadInstructions(testProgram);
-        for(var i = 0; i < testProgram.length; i += 1) {
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();
         };
 

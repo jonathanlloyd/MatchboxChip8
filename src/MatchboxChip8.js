@@ -739,6 +739,41 @@ Interpreter.prototype.jumpPlus = function (value) {
     this.PC = jumpAddress - 2;
 };
 
+/**
+ * Cxkk - RND Vx, byte
+ * Set Vx = random byte AND kk.
+ * 
+ * The interpreter generates a random number from 0 to 255, which is then
+ * ANDed with the value kk. The results are stored in Vx. 
+ */
+Interpreter.prototype.loadRand = function (registerNumberX, value) {
+    log.debug('Loading RND');
+
+    log.debug(
+        'register number =',
+        registerNumberX,
+        'AND value =',
+        value
+    );
+
+    var rand = randRange(0, 255);
+    var result = rand & value;
+
+    log.debug(
+        'Rand =',
+        rand,
+        'Result =',
+        result
+    );
+
+    this.registers[registerNumberX] = result;
+};
+
+
+function randRange(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 
 module.exports = {
     Interpreter: Interpreter,

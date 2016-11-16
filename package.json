@@ -21,6 +21,7 @@
     "loglevel": "^1.4.1"
   },
   "devDependencies": {
-    "mocha": "^3.1.2"
+    "mocha": "^3.1.2",
+    "rewire": "^2.5.2"
   }
 }

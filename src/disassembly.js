@@ -199,6 +199,14 @@ var INSTRUCTION_MAP = {
         return function () {
             interpreter.jumpPlus(value);
         };
+    },
+    "^c(.)(..)$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16),
+            value = parseInt(matchResult[2], 16);
+
+        return function () {
+            interpreter.loadRand(registerNumberX, value);
+        };
     }
 };
 

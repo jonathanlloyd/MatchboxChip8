@@ -1,5 +1,7 @@
 var assert = require('assert');
-var MatchboxChip8 = require('../src/MatchboxChip8');
+var rewire = require('rewire');
+
+var MatchboxChip8 = rewire('../src/MatchboxChip8');
 
 describe('interpreter', function() {
     it('00E0 - should clear the display', function() {
@@ -841,6 +843,39 @@ describe('interpreter', function() {
             register0Value + value,
             'PC should equal register 0 value + nnn value'
         );
+    });
+
+    it('Cxkk - should set r\'x to rand(0-255) AND kk', function() {
+        var testRandNum = 0x02;
+
+        MatchboxChip8.__with__({
+            randRange: function(min, max) {
+                return testRandNum;
+            }
+        })(function () {
+
+            var registerXNum = 0x0;
+            var value = 0x0F;
+
+            var testProgram = [
+                0xc0,
+                0x0f
+            ];
+
+            var interpreter = new MatchboxChip8.Interpreter();
+
+            interpreter.loadInstructions(testProgram);
+            for(var i = 0; i < testProgram.length / 2; i += 1) {
+                interpreter.step();
+            };
+
+            assert.equal(
+                interpreter.registers[registerXNum],
+                0x02,
+                'r\'0 should equal 0x02'
+            );
+
+        });
     });
 
 });

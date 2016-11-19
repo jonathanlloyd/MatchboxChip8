@@ -880,11 +880,18 @@ Interpreter.prototype.drawSprite = function (
  * Checks the keyboard, and if the key corresponding to the value of Vx is
  * currently in the down position, PC is increased by 2.
  */
-Interpreter.prototype.skipKeyPressed = function (keyCode) {
+Interpreter.prototype.skipKeyPressed = function (registerXNum) {
     log.debug(
-        'Skipping if key',
-        '0x' + keyCode.toString(16),
+        'Skipping if key in register',
+        'V' + registerXNum.toString(16),
         'is pressed'
+    );
+
+    var keyCode = this.registers[registerXNum];
+
+    log.debug(
+        'KeyCode is',
+        '0x' + keyCode
     );
 
     var keyPressed = this.keyboard[keyCode];

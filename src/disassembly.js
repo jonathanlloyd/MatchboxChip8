@@ -222,10 +222,10 @@ var INSTRUCTION_MAP = {
         };
     },
     "^e(.)9e$": function (interpreter, matchResult) {
-        var keyCode = parseInt(matchResult[1], 16);
+        var registerXNum = parseInt(matchResult[1], 16);
 
         return function () {
-            interpreter.skipKeyPressed(keyCode);
+            interpreter.skipKeyPressed(registerXNum);
         };
     }
 };

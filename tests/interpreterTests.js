@@ -1041,16 +1041,18 @@ describe('interpreter', function() {
     });
 
     it('Ex9E - should skip if key is pressed (pressed)', function() {
-        var keyCode = 0;
+        var registerXNum = 5;
+        var registerXValue = 1;
         var testProgram = [
-            0xe0,
+            0xe5,
             0x9e
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.loadInstructions(testProgram);
 
-        interpreter.keyDown(keyCode);
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.keyDown(registerXValue);
         var oldPC = interpreter.PC;
 
         for(var i = 0; i < testProgram.length / 2; i += 1) {
@@ -1065,6 +1067,8 @@ describe('interpreter', function() {
     });
 
     it('Ex9E - should skip if key is pressed (not pressed)', function() {
+        var registerXNum = 5;
+        var registerXValue = 1;
         var testProgram = [
             0xe0,
             0x9e
@@ -1073,6 +1077,7 @@ describe('interpreter', function() {
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.loadInstructions(testProgram);
 
+        interpreter.registers[registerXNum] = registerXValue;
         var oldPC = interpreter.PC;
 
         for(var i = 0; i < testProgram.length / 2; i += 1) {

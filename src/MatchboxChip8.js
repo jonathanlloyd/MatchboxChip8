@@ -55,7 +55,11 @@ var Interpreter = function (debugMode) {
         log.setLevel("warn");
     }
 
+    // 64 * 32 monochrome display
     this.display = new Array(2048);
+
+    // 16 input keys
+    this.keyboard = new Array(16);
 
     /*
      * 4KB of internal memory
@@ -103,6 +107,11 @@ Interpreter.prototype.reset = function () {
     // Clear display
     for(var i = 0; i < this.display.length; i += 1) {
         this.display[i] = 0;
+    }
+
+    // Reset keyboard
+    for(i = 0; i < this.keyboard.length; i += 1) {
+        this.keyboard[i] = false;
     }
 
     // Reset RAM
@@ -265,6 +274,30 @@ Interpreter.prototype.popStack = function () {
     var value = this.stack[this.SP];
     this.SP -= 1;
     return value;
+};
+
+/**
+ * Mark one of the sixteen keys as having being pressed
+ * @param {Boolean} keyCode - Numeric key code (0-15) of the key pressed.
+ */
+Interpreter.prototype.keyDown = function (keyCode) {
+    log.debug(
+        'Pressing key',
+        keyCode.toString(16)
+    );
+    this.keyboard[keyCode] = true;
+};
+
+/**
+ * Mark one of the sixteen keys as having being released
+ * @param {Boolean} keyCode - Numeric key code (0-15) of the key pressed.
+ */
+Interpreter.prototype.keyUp = function (keyCode) {
+    log.debug(
+        'Releasing key',
+        keyCode.toString(16)
+    );
+    this.keyboard[keyCode] = false;
 };
 
 /*
@@ -837,6 +870,30 @@ Interpreter.prototype.drawSprite = function (
 
     if (this.registers[0xf] === 1) {
         log.debug('Collision bit set');
+    }
+};
+
+/**
+ * Ex9E - SKP Vx
+ * Skip next instruction if key with the value of Vx is pressed.
+ * 
+ * Checks the keyboard, and if the key corresponding to the value of Vx is
+ * currently in the down position, PC is increased by 2.
+ */
+Interpreter.prototype.skipKeyPressed = function (keyCode) {
+    log.debug(
+        'Skipping if key',
+        '0x' + keyCode.toString(16),
+        'is pressed'
+    );
+
+    var keyPressed = this.keyboard[keyCode];
+
+    if(keyPressed) {
+        log.debug('Key is pressed - skipping');
+        this.PC += 2;
+    } else {
+        log.debug('Key not pressed - not skipping');
     }
 };
 

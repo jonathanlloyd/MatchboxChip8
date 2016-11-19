@@ -220,6 +220,13 @@ var INSTRUCTION_MAP = {
                 spriteHeight
             );
         };
+    },
+    "^e(.)9e$": function (interpreter, matchResult) {
+        var keyCode = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.skipKeyPressed(keyCode);
+        };
     }
 };
 

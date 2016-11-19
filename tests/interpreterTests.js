@@ -985,6 +985,7 @@ describe('interpreter', function() {
             'Wrapped 0 sprite should be drawn'
         );
     });
+
     it('Dxyn - should draw sprites with collision', function() {
         var testProgram = [
             0xD0,
@@ -1037,6 +1038,52 @@ describe('interpreter', function() {
             'Collision bit should be set'
         );
 ;
+    });
+
+    it('Ex9E - should skip if key is pressed (pressed)', function() {
+        var keyCode = 0;
+        var testProgram = [
+            0xe0,
+            0x9e
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.keyDown(keyCode);
+        var oldPC = interpreter.PC;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            oldPC + 4,
+            'PC should equal old value + 4'
+        );
+    });
+
+    it('Ex9E - should skip if key is pressed (not pressed)', function() {
+        var testProgram = [
+            0xe0,
+            0x9e
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        var oldPC = interpreter.PC;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            oldPC + 2,
+            'PC should equal old value + 2'
+        );
     });
 
 });

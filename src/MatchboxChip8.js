@@ -33,6 +33,7 @@ THE SOFTWARE.
 
 var log = require('loglevel').getLogger("matchboxchip8");
 
+var bitmapFont = require("./bitmapFont");
 var disassembly = require("./disassembly");
 var rom_loading = require("./rom_loading");
 
@@ -107,6 +108,23 @@ Interpreter.prototype.reset = function () {
     // Reset RAM
     for(i = 0; i < this.RAM.length; i += 1) {
         this.RAM[i] = 0;
+    }
+
+    // Load bitmap font into RAM
+    var memoryAddress = 0;
+    for(i = 0; i < bitmapFont.FONT.length; i += 1) {
+        var glyph = bitmapFont.FONT[i];
+        for(var byteNum = 0; byteNum < glyph.length; byteNum += 1) {
+            var bitList = glyph[byteNum];
+            var byteValue = 0;
+            for (var bitIndex = 0; bitIndex < 8; bitIndex += 1) {
+                byteValue = byteValue << 1;
+                var bit = bitList[bitIndex];
+                byteValue = byteValue ^ bit;
+            }
+            this.RAM[memoryAddress] = byteValue;
+            memoryAddress += 1;
+        }
     }
 
     // Reset registers
@@ -348,7 +366,7 @@ Interpreter.prototype.skipNotEqualImmediate = function (
     ) {
     log.debug("Skip Not Equal Immediate");
 
-    var shouldSkip = this.registers[registerNumber] != immediateValue;
+    var shouldSkip = this.registers[registerNumber] !== immediateValue;
     if(shouldSkip) {
         log.debug(
             'Register V',
@@ -767,6 +785,59 @@ Interpreter.prototype.loadRand = function (registerNumberX, value) {
     );
 
     this.registers[registerNumberX] = result;
+};
+
+/**
+ * Dxyn - DRW Vx, Vy, nibble
+ * Display n-byte sprite starting at memory location I at (Vx, Vy), set VF =
+ * collision.
+ * 
+ * The interpreter reads n bytes from memory, starting at the address stored
+ * in I. These bytes are then displayed as sprites on screen at coordinates
+ * (Vx, Vy). Sprites are XORed onto the existing screen. If this causes any
+ * pixels to be erased, VF is set to 1, otherwise it is set to 0. If the
+ * sprite is positioned so part of it is outside the coordinates of the
+ * display, it wraps around to the opposite side of the screen. 
+ */
+Interpreter.prototype.drawSprite = function (
+        registerNumberX,
+        registerNumberY,
+        spriteHeight
+    ) {
+    log.debug('Drawing Sprite');
+
+    var spriteAddress = this.I;
+    var xCoord = this.registers[registerNumberX];
+    var yCoord = this.registers[registerNumberY];
+
+    log.debug(
+        'xCoord = ' + xCoord,
+        'yCoord = ' + yCoord,
+        'spriteHeight = ' + spriteHeight,
+        'spriteAddress = ' + spriteAddress
+    );
+
+    this.registers[0xF] = 0;
+
+    for (var y = 0; y < spriteHeight; y += 1) {
+        var spriteByte = this.RAM[spriteAddress + y];
+        for(var x = 0; x < 8; x += 1) {
+            var drawX = (x + xCoord) % 64;
+            var drawY = (y + yCoord) % 32;
+
+            var oldPixel = this.getPixel(drawX, drawY);
+            if(oldPixel === 1) {
+                this.registers[0xf] = 1;
+            }
+
+            var newPixel = (spriteByte >> 7 - x) & 1;
+            this.setPixel(drawX, drawY, newPixel ^ oldPixel);
+        }
+    }
+
+    if (this.registers[0xf] === 1) {
+        log.debug('Collision bit set');
+    }
 };
 
 

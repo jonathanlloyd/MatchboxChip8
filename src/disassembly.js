@@ -207,6 +207,19 @@ var INSTRUCTION_MAP = {
         return function () {
             interpreter.loadRand(registerNumberX, value);
         };
+    },
+    "^d(.)(.)(.)$": function (interpreter, matchResult) {
+        var registerNumberX = parseInt(matchResult[1], 16),
+            registerNumberY = parseInt(matchResult[2], 16),
+            spriteHeight = parseInt(matchResult[3], 16);
+
+        return function () {
+            interpreter.drawSprite(
+                registerNumberX,
+                registerNumberY,
+                spriteHeight
+            );
+        };
     }
 };
 

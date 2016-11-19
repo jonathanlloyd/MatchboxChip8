@@ -878,5 +878,166 @@ describe('interpreter', function() {
         });
     });
 
+    it('Dxyn - should draw n byte sprite from I at x y', function() {
+        var I = 0x0;
+        var registerXNum = 0x0;
+        var registerXValue = 0x1;
+        var registerYNum = 0x1;
+        var registerYValue = 0x2;
+        var n = 0x8;
+
+        var testProgram = [
+            0xd0,
+            0x15
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
+        interpreter.I = I;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        var expectedPixels = [
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 1, 0, 0, 0],
+            [0, 1, 0, 0, 1, 0, 0, 0],
+            [0, 1, 0, 0, 1, 0, 0, 0],
+            [0, 1, 0, 0, 1, 0, 0, 0],
+            [0, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+
+        var resultPixels = [];
+        for (var xCoord = 0; xCoord < expectedPixels[0].length; xCoord += 1) {
+            var row = [];
+            for(var yCoord = 0; yCoord < expectedPixels.length; yCoord += 1) {
+                row.push(interpreter.getPixel(yCoord, xCoord));
+            }
+            resultPixels.push(row);
+        }
+
+        var expectedPixelsStr = JSON.stringify(expectedPixels);
+        var resultPixelsStr = JSON.stringify(resultPixels);
+
+        assert.equal(
+            expectedPixelsStr,
+            resultPixelsStr,
+            '0 sprite should be drawn'
+        );
+    });
+
+    it('Dxyn - should draw n byte sprite from I at x y (wrap)', function() {
+        var I = 0x0;
+        var registerXNum = 0x0;
+        var registerXValue = 0x3e;
+        var registerYNum = 0x1;
+        var registerYValue = 0x2;
+        var n = 0x8;
+
+        var testProgram = [
+            0xd0,
+            0x15
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
+        interpreter.I = I;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        var expectedPixels = [
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0],
+            [1, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+
+        var resultPixels = [];
+        for (var xCoord = 0; xCoord < expectedPixels[0].length; xCoord += 1) {
+            var row = [];
+            for(var yCoord = 0; yCoord < expectedPixels.length; yCoord += 1) {
+                row.push(interpreter.getPixel(yCoord, xCoord));
+            }
+            resultPixels.push(row);
+        }
+
+        var expectedPixelsStr = JSON.stringify(expectedPixels);
+        var resultPixelsStr = JSON.stringify(resultPixels);
+
+        assert.equal(
+            expectedPixelsStr,
+            resultPixelsStr,
+            'Wrapped 0 sprite should be drawn'
+        );
+    });
+    it('Dxyn - should draw sprites with collision', function() {
+        var testProgram = [
+            0xD0,
+            0x15,
+            0x60,
+            0x02,
+            0xD0,
+            0x15
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        var expectedPixels = [
+            [1, 1, 0, 0, 1, 1, 0, 0],
+            [1, 0, 1, 1, 0, 1, 0, 0],
+            [1, 0, 1, 1, 0, 1, 0, 0],
+            [1, 0, 1, 1, 0, 1, 0, 0],
+            [1, 1, 0, 0, 1, 1, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+
+        var resultPixels = [];
+        for (var xCoord = 0; xCoord < expectedPixels[0].length; xCoord += 1) {
+            var row = [];
+            for(var yCoord = 0; yCoord < expectedPixels.length; yCoord += 1) {
+                row.push(interpreter.getPixel(yCoord, xCoord));
+            }
+            resultPixels.push(row);
+        }
+
+        var expectedPixelsStr = JSON.stringify(expectedPixels);
+        var resultPixelsStr = JSON.stringify(resultPixels);
+
+        assert.equal(
+            expectedPixelsStr,
+            resultPixelsStr,
+            'XORed sprite should be drawn'
+        )
+
+        assert.equal(
+            interpreter.registers[0xF],
+            1,
+            'Collision bit should be set'
+        );
+;
+    });
+
 });
 

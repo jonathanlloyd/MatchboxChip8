@@ -315,7 +315,7 @@ Interpreter.prototype.popStack = function () {
 
 /**
  * Mark one of the sixteen keys as having being pressed
- * @param {Boolean} keyCode - Numeric key code (0-15) of the key pressed.
+ * @param {Number} keyCode - Numeric key code (0-15) of the key pressed.
  */
 Interpreter.prototype.keyDown = function (keyCode) {
     log.debug(
@@ -327,7 +327,7 @@ Interpreter.prototype.keyDown = function (keyCode) {
 
 /**
  * Mark one of the sixteen keys as having being released
- * @param {Boolean} keyCode - Numeric key code (0-15) of the key pressed.
+ * @param {Number} keyCode - Numeric key code (0-15) of the key pressed.
  */
 Interpreter.prototype.keyUp = function (keyCode) {
     log.debug(

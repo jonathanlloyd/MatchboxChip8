@@ -989,6 +989,38 @@ Interpreter.prototype.setRegisterDT = function (registerXNum) {
     this.registers[registerXNum] = this.DT;
 };
 
+/**
+ * Fx0A - LD Vx, K
+ * Wait for a key press, store the value of the key in Vx.
+ * 
+ * All execution stops until a key is pressed, then the value of that key is
+ * stored in Vx.
+ */
+Interpreter.prototype.waitForKeyDown = function (registerXNum) {
+    log.debug('Waiting for key press');
+
+    var keyCode = null;
+    for(var i = 0; i < this.keyboard.length; i += 1) {
+        if(this.keyboard[i]) {
+            keyCode = i;
+            break;
+        }
+    }
+
+    if(keyCode === null) {
+        log.debug('No key pressed - blocking');
+        this.PC -= 2;
+    } else {
+        log.debug(
+            'Key',
+            '0x' + keyCode,
+            'pressed - setting value in register',
+            'V' + registerXNum
+        );
+        this.registers[registerXNum] = keyCode;
+    }
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

@@ -241,6 +241,13 @@ var INSTRUCTION_MAP = {
         return function () {
             interpreter.setRegisterDT(registerXNum);
         };
+    },
+    "^f(.)0a$": function (interpreter, matchResult) {
+        var registerXNum = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.waitForKeyDown(registerXNum);
+        };
     }
 };
 

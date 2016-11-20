@@ -1168,6 +1168,45 @@ describe('interpreter', function() {
         );
     });
 
+    it('Fx0A - should wait for keypress and store value in r\'x', function() {
+        var testRegisterNum = 0;
+        var registerXNum = 1;
+        var keyCode = 0x5;
+        var testProgram = [
+            0xf1,
+            0x0a,
+            0x60,
+            0xff
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.step();
+        interpreter.step();
+
+        var testRegisterValueAfterWait = interpreter.registers[
+            testRegisterNum
+        ];
+        interpreter.keyDown(keyCode);
+
+        interpreter.step();
+
+        assert.equal(
+            interpreter.registers[registerXNum],
+            keyCode,
+            'Register x should equal keycode'
+        );
+
+        assert.equal(
+            interpreter.registers[
+                testRegisterNum
+            ],
+            0,
+            'Test register should equal 0'
+        );
+    });
+
     it('should decrement timer registers at 60hz', function() {
         var dt = 120;
         var st = 50;

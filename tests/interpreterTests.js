@@ -1144,6 +1144,30 @@ describe('interpreter', function() {
         );
     });
 
+    it('Fx07 - should put delay timer value into r\'x', function() {
+        var registerXNum = 5;
+        var delayTimerValue = 10;
+        var testProgram = [
+            0xf5,
+            0x07
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.DT = delayTimerValue;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.registers[registerXNum],
+            delayTimerValue,
+            'Register x should equal delay timer value'
+        );
+    });
+
     it('should decrement timer registers at 60hz', function() {
         var dt = 120;
         var st = 50;

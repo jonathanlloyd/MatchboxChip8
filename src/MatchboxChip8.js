@@ -972,6 +972,23 @@ Interpreter.prototype.skipKeyNotPressed = function (registerXNum) {
     }
 };
 
+/**
+ * Fx07 - LD Vx, DT
+ * Set Vx = delay timer value.
+ * 
+ * The value of DT is placed into Vx.
+ */
+Interpreter.prototype.setRegisterDT = function (registerXNum) {
+    log.debug(
+        'Setting register',
+        'V' + registerXNum.toString(16),
+        'to value of delay timer:',
+        '0x' + this.DT
+    );
+
+    this.registers[registerXNum] = this.DT;
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

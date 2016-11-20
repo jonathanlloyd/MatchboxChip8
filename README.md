@@ -66,7 +66,7 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~Fx0A - LD Vx, K~~
 
-Fx15 - LD DT, Vx
+~~Fx15 - LD DT, Vx~~
 
 Fx18 - LD ST, Vx
 

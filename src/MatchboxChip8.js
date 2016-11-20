@@ -1021,6 +1021,25 @@ Interpreter.prototype.waitForKeyDown = function (registerXNum) {
     }
 };
 
+/**
+ * Fx15 - LD DT, Vx
+ * Set delay timer = Vx.
+ * 
+ * DT is set equal to the value of Vx.
+ */
+Interpreter.prototype.setDT = function (registerXNum) {
+    var value = this.registers[registerXNum];
+
+    log.debug(
+        'Setting delay timer to value of register',
+        'V' + registerXNum.toString(16),
+        '-',
+        '0x' + value.toString(16)
+    );
+
+    this.DT = value;
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

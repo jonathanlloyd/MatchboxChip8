@@ -70,7 +70,7 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~Fx18 - LD ST, Vx~~
 
-Fx1E - ADD I, Vx
+~~Fx1E - ADD I, Vx~~
 
 Fx29 - LD F, Vx
 

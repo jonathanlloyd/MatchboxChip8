@@ -1059,6 +1059,28 @@ Interpreter.prototype.setST = function (registerXNum) {
     this.ST = value;
 };
 
+/**
+ * Fx1E - ADD I, Vx
+ * Set I = I + Vx.
+ * 
+ * The values of I and Vx are added, and the results are stored in I.
+ */
+Interpreter.prototype.addIRegister = function (registerXNum) {
+    var IValue = this.I;
+    var registerXValue = this.registers[registerXNum];
+    var result = IValue + registerXValue;
+
+    log.debug(
+        'Adding value of register',
+        'V' + registerXNum.toString(16),
+        '(0x' + registerXValue + ')',
+        'into register I',
+        '(0x' + IValue.toString(16) + ')'
+    );
+
+    this.I = result;
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

@@ -1306,5 +1306,32 @@ describe('interpreter', function() {
         );
     });
 
+    it('Fx1E - should add register x into I', function() {
+        var registerXNum = 1;
+        var registerXValue = 0x1;
+        var I = 0x1;
+
+        var testProgram = [
+            0xf1,
+            0x1e
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.I = I;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.I,
+            0x2,
+            'Register I should equal 2'
+        );
+    });
+
 });
 

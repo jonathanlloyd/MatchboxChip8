@@ -58,7 +58,7 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~Dxyn - DRW Vx, Vy, nibble~~
 
-Ex9E - SKP Vx
+~~Ex9E - SKP Vx~~
 
 ExA1 - SKNP Vx
 

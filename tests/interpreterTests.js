@@ -1091,5 +1091,58 @@ describe('interpreter', function() {
         );
     });
 
+    it('ExA1 - should skip if key is not pressed (pressed)', function() {
+        var registerXNum = 5;
+        var registerXValue = 1;
+        var testProgram = [
+            0xe5,
+            0xa1
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.keyDown(registerXValue);
+        var oldPC = interpreter.PC;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            oldPC + 2,
+            'PC should equal old value + 2'
+        );
+    });
+
+    it('Ex9E - should skip if key is not pressed (not pressed)', function() {
+        var registerXNum = 5;
+        var registerXValue = 1;
+        var testProgram = [
+            0xe5,
+            0xa1
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.keyDown(registerXValue);
+        interpreter.keyUp(registerXValue);
+        var oldPC = interpreter.PC;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.PC,
+            oldPC + 4,
+            'PC should equal old value + 4'
+        );
+    });
+
 });
 

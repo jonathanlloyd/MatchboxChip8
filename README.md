@@ -60,7 +60,7 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~Ex9E - SKP Vx~~
 
-ExA1 - SKNP Vx
+~~ExA1 - SKNP Vx~~
 
 Fx07 - LD Vx, DT
 

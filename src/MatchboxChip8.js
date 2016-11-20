@@ -904,6 +904,37 @@ Interpreter.prototype.skipKeyPressed = function (registerXNum) {
     }
 };
 
+/**
+ * ExA1 - SKNP Vx
+ * Skip next instruction if key with the value of Vx is not pressed.
+ * 
+ * Checks the keyboard, and if the key corresponding to the value of Vx is
+ * currently in the up position, PC is increased by 2.
+ */
+Interpreter.prototype.skipKeyNotPressed = function (registerXNum) {
+    log.debug(
+        'Skipping if key in register',
+        'V' + registerXNum.toString(16),
+        'is not pressed'
+    );
+
+    var keyCode = this.registers[registerXNum];
+
+    log.debug(
+        'KeyCode is',
+        '0x' + keyCode
+    );
+
+    var keyPressed = this.keyboard[keyCode];
+
+    if(keyPressed) {
+        log.debug('Key is pressed - not skipping');
+    } else {
+        log.debug('Key not pressed - skipping');
+        this.PC += 2;
+    }
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

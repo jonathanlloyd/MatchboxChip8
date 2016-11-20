@@ -227,6 +227,13 @@ var INSTRUCTION_MAP = {
         return function () {
             interpreter.skipKeyPressed(registerXNum);
         };
+    },
+    "^e(.)a1$": function (interpreter, matchResult) {
+        var registerXNum = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.skipKeyNotPressed(registerXNum);
+        };
     }
 };
 

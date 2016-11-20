@@ -1144,5 +1144,54 @@ describe('interpreter', function() {
         );
     });
 
+    it('should decrement timer registers at 60hz', function() {
+        var dt = 120;
+        var st = 50;
+
+        var startTime = 1000;
+        var secondsPassed = 1;
+
+        var testProgram = [
+            0x00,
+            0xe0,
+            0x00,
+            0xe0
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        MatchboxChip8.__with__({
+            currentTime: function() {
+                return startTime;
+            }
+        })(function () {
+            interpreter.step();
+        });
+
+        interpreter.DT = dt;
+        interpreter.ST = st;
+
+        MatchboxChip8.__with__({
+            currentTime: function() {
+                return startTime + secondsPassed;
+            }
+        })(function () {
+            interpreter.step();
+        });
+
+        assert.equal(
+            interpreter.DT,
+            60,
+            'Delay timer should decrease by 60'
+        );
+
+        assert.equal(
+            interpreter.ST,
+            0,
+            'Sound time should cap at 0'
+        );
+    });
+
 });
 

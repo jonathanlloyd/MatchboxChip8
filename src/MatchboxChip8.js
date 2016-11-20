@@ -39,6 +39,9 @@ var rom_loading = require("./rom_loading");
 
 var PROGRAM_ADDRESS = 0x200;
 
+//In hz
+var TIMER_FREQUENCY = 60;
+
 
 /**
  * Matchbox interpreter
@@ -83,6 +86,9 @@ var Interpreter = function (debugMode) {
      *   - When > 0, sound plays
      */
     this.ST = 0;
+
+    // Time last step was executed
+    this._lastStepTime = 0;
 
     /*
      * The program counter
@@ -150,6 +156,9 @@ Interpreter.prototype.reset = function () {
     // Reset sound timer
     this.ST = 0;
 
+    // Reset last step time
+    this._lastStepTime = 0;
+
     // Reset program counter
     this.PC = PROGRAM_ADDRESS;
 
@@ -196,17 +205,45 @@ Interpreter.prototype.step = function() {
     var highByte = this.RAM[this.PC];
     var lowByte = this.RAM[this.PC + 1];
     var rawInstruction = (highByte << 8) | lowByte;
+
     // Decode instruction
     log.debug("Decoding instruction 0x" + rawInstruction.toString(16));
     var decodedInstruction = this.decodeInstruction(rawInstruction);
+
     // Execute instruction
     if(decodedInstruction !== null) {
         decodedInstruction();
     }
+
+    // Run timer logic
+    this.stepTimers();
+
     // Increase program counter
     this.PC += 2;
 };
 
+/**
+ * Decrement delay and sound timers at a rate of 60hz
+ */
+Interpreter.prototype.stepTimers = function() {
+    var now = currentTime();
+    var lastStepTime = this._lastStepTime || now;
+
+    var secondsPassed = now - lastStepTime;
+    var numSteps = Math.floor(secondsPassed * TIMER_FREQUENCY);
+
+    this.DT -= numSteps;
+    if(this.DT < 0) {
+        this.DT = 0;
+    }
+
+    this.ST -= numSteps;
+    if(this.ST < 0) {
+        this.ST = 0;
+    }
+
+    this._lastStepTime = now;
+};
 
 /**
  * Decode a numeric instruction into a lambda containing the needed
@@ -938,6 +975,10 @@ Interpreter.prototype.skipKeyNotPressed = function (registerXNum) {
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function currentTime() {
+    return Date.now() / 1000;
 }
 
 

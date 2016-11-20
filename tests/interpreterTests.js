@@ -1333,5 +1333,27 @@ describe('interpreter', function() {
         );
     });
 
+    it('Fx29 - should load the address of bitmap char into r\'i', function() {
+        var charIndex = 0xf;
+
+        var testProgram = [
+            0xff,
+            0x29
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.I,
+            0xf * 5,
+            'Register I should equal 0xf * 5'
+        );
+    });
+
 });
 

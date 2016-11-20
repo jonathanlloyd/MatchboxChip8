@@ -1081,6 +1081,25 @@ Interpreter.prototype.addIRegister = function (registerXNum) {
     this.I = result;
 };
 
+/**
+ * Fx29 - LD F, Vx
+ * Set I = location of sprite for digit Vx.
+ * 
+ * The value of I is set to the location for the hexadecimal sprite 
+ * corresponding to the value of Vx.
+ */
+Interpreter.prototype.loadCharAddress = function (charIndex) {
+    var charAddress = charIndex * 5;
+
+    log.debug(
+        'Loading address of char',
+        charIndex.toString(16),
+        '(' + charAddress.toString(16) + ')'
+    );
+
+    this.I = charAddress;
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

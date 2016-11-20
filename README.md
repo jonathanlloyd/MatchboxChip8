@@ -72,7 +72,7 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~Fx1E - ADD I, Vx~~
 
-Fx29 - LD F, Vx
+~~Fx29 - LD F, Vx~~
 
 Fx33 - LD B, Vx
 

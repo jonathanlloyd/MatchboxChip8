@@ -269,6 +269,13 @@ var INSTRUCTION_MAP = {
         return function () {
             interpreter.addIRegister(registerXNum);
         };
+    },
+    "^f(.)29$": function (interpreter, matchResult) {
+        var charIndex = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.loadCharAddress(charIndex);
+        };
     }
 };
 

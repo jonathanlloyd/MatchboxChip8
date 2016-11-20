@@ -283,6 +283,13 @@ var INSTRUCTION_MAP = {
         return function () {
             interpreter.writeBCD(registerXNum);
         };
+    },
+    "^f(.)55$": function (interpreter, matchResult) {
+        var registerXNum = parseInt(matchResult[1], 16);
+
+        return function () {
+            interpreter.dumpRegisters(registerXNum);
+        };
     }
 };
 

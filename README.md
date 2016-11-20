@@ -76,7 +76,7 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 ~~Fx33 - LD B, Vx~~
 
-Fx55 - LD [I], Vx
+~~Fx55 - LD [I], Vx~~
 
 Fx65 - LD Vx, [I]
 

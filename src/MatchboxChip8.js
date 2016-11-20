@@ -1137,6 +1137,28 @@ Interpreter.prototype.writeBCD = function (registerXNum) {
     this.RAM[I + 2] = units;
 };
 
+/**
+ * Fx55 - LD [I], Vx
+ * Store registers V0 through Vx in memory starting at location I.
+ * 
+ * The interpreter copies the values of registers V0 through Vx into memory,
+ * starting at the address in I.
+ */
+Interpreter.prototype.dumpRegisters = function (registerXNum) {
+    var I = this.I;
+
+    log.debug(
+        'Dumping registers V0 -',
+        'V' + registerXNum.toString(16),
+        'to address',
+        '0x' + I.toString(16)
+    );
+
+    for(var regIndex = 0; regIndex <= registerXNum; regIndex += 1) {
+        this.RAM[I + regIndex] = this.registers[regIndex];
+    }
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

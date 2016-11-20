@@ -1394,5 +1394,54 @@ describe('interpreter', function() {
         );
     });
 
+    it('Fx55 - should dump r\' values 0-x into memory at r\'i', function() {
+        var I = 0x210;
+
+        var registerXNum = 0x3;
+
+        var register0Value = 0x0;
+        var register1Value = 0x1;
+        var register2Value = 0x2;
+        var register3Value = 0x3;
+
+        var testProgram = [
+            0xf3,
+            0x55
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[0x0] = register0Value;
+        interpreter.registers[0x1] = register1Value;
+        interpreter.registers[0x2] = register2Value;
+        interpreter.registers[0x3] = register3Value;
+
+        interpreter.I = I;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        var expectedArray = [
+            0x0,
+            0x1,
+            0x2,
+            0x3
+        ];
+
+        var resultArray = [
+            interpreter.RAM[I],
+            interpreter.RAM[I + 1],
+            interpreter.RAM[I + 2],
+            interpreter.RAM[I + 3]
+        ];
+
+        assert.equal(
+            JSON.stringify(expectedArray),
+            JSON.stringify(resultArray)
+        );
+    });
+
 });
 

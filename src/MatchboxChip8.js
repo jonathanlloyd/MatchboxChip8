@@ -1100,6 +1100,43 @@ Interpreter.prototype.loadCharAddress = function (charIndex) {
     this.I = charAddress;
 };
 
+/**
+ * Fx33 - LD B, Vx
+ * Store BCD representation of Vx in memory locations I, I+1, and I+2.
+ * 
+ * The interpreter takes the decimal value of Vx, and places the hundreds
+ * digit in memory at location in I, the tens digit at location I+1, and the
+ * ones digit at location I+2.
+ */
+Interpreter.prototype.writeBCD = function (registerXNum) {
+    var registerXValue = this.registers[registerXNum];
+
+    var hundreds = Math.floor(registerXValue / 100);
+    var tens = Math.floor((registerXValue / 10) % 10);
+    var units = Math.floor((registerXValue / 1) % 10);
+
+    var I = this.I;
+
+    log.debug(
+        'Loading BCD value',
+        registerXValue,
+        'from register',
+        'V' + registerXNum.toString(16),
+        'into I, I+1, I+2 starting at location',
+        I.toString(16)
+    );
+
+    log.debug(
+        'I = ' + hundreds + ', ',
+        'I + 1 = ' + tens + ', ',
+        'I + 2 = ' + units
+    );
+
+    this.RAM[I] = hundreds;
+    this.RAM[I + 1] = tens;
+    this.RAM[I + 2] = units;
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

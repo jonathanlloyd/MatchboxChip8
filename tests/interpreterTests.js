@@ -1355,5 +1355,44 @@ describe('interpreter', function() {
         );
     });
 
+    it('Fx33 - should store BCD of r\'x in r\'i...', function() {
+        var registerXNum = 0x1;
+        var registerXValue = 0xFF;
+
+        var testProgram = [
+            0xf1,
+            0x33
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[registerXNum] = registerXValue;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        var I = interpreter.I;
+
+        assert.equal(
+            interpreter.RAM[I],
+            0x2,
+            'RAM[i] should equal BCD of 2'
+        );
+
+        assert.equal(
+            interpreter.RAM[I + 1],
+            0x5,
+            'RAM[i + 1] should equal BCD of 5'
+        );
+
+        assert.equal(
+            interpreter.RAM[I + 2],
+            0x5,
+            'RAM[i + 2] should equal BCD of 5'
+        );
+    });
+
 });
 

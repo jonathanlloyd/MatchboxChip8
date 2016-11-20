@@ -1117,7 +1117,7 @@ describe('interpreter', function() {
         );
     });
 
-    it('Ex9E - should skip if key is not pressed (not pressed)', function() {
+    it('ExA1 - should skip if key is not pressed (not pressed)', function() {
         var registerXNum = 5;
         var registerXValue = 1;
         var testProgram = [

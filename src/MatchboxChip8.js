@@ -1040,6 +1040,25 @@ Interpreter.prototype.setDT = function (registerXNum) {
     this.DT = value;
 };
 
+/**
+ * Fx18 - LD ST, Vx
+ * Set sound timer = Vx.
+ * 
+ * ST is set equal to the value of Vx.
+ */
+Interpreter.prototype.setST = function (registerXNum) {
+    var value = this.registers[registerXNum];
+
+    log.debug(
+        'Setting sound timer to value of register',
+        'V' + registerXNum.toString(16),
+        '-',
+        '0x' + value.toString(16)
+    );
+
+    this.ST = value;
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

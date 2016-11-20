@@ -1281,5 +1281,30 @@ describe('interpreter', function() {
         );
     });
 
+    it('Fx18 - should set sound timer to register x', function() {
+        var registerXNum = 1;
+        var registerXValue = 10;
+
+        var testProgram = [
+            0xf1,
+            0x18
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[registerXNum] = registerXValue;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            interpreter.ST,
+            registerXValue,
+            'Sound timer should equal register x value'
+        );
+    });
+
 });
 

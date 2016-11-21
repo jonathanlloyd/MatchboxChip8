@@ -1088,7 +1088,8 @@ Interpreter.prototype.addIRegister = function (registerXNum) {
  * The value of I is set to the location for the hexadecimal sprite 
  * corresponding to the value of Vx.
  */
-Interpreter.prototype.loadCharAddress = function (charIndex) {
+Interpreter.prototype.loadCharAddress = function (registerXNum) {
+    var charIndex = this.registers[registerXNum];
     var charAddress = charIndex * 5;
 
     log.debug(

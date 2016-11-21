@@ -1334,15 +1334,18 @@ describe('interpreter', function() {
     });
 
     it('Fx29 - should load the address of bitmap char into r\'i', function() {
-        var charIndex = 0xf;
+        var registerXNum = 1;
+        var registerXValue = 0xf;
 
         var testProgram = [
-            0xff,
+            0xf1,
             0x29
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[registerXNum] = registerXValue;
 
         for(var i = 0; i < testProgram.length / 2; i += 1) {
             interpreter.step();

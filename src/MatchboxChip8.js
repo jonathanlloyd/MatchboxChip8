@@ -385,7 +385,7 @@ Interpreter.prototype.jump = function (jumpAddress) {
  */
 Interpreter.prototype.call = function (callAddress) {
     log.debug("Calling subroutine at 0x", callAddress.toString(16));
-    this.pushStack(this.PC);
+    this.pushStack(this.PC + 2);
     this.PC = callAddress - 2;
 };
 

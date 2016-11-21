@@ -104,8 +104,8 @@ describe('interpreter', function() {
         );
         assert.equal(
             interpreter.stack[0],
-            oldPC,
-            'Top of stack should equal old program counter value'
+            oldPC + 2,
+            'Top of stack should equal old program counter value plus 2'
         );
         assert.equal(
             interpreter.PC,

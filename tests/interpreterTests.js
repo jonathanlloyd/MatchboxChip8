@@ -1443,5 +1443,59 @@ describe('interpreter', function() {
         );
     });
 
+    it('Fx65 - Should load registers from RAM from r\'i', function() {
+        var I = 0x210;
+
+        var registerXNum = 0x3;
+
+        var IValue = 0x0;
+        var I1Value = 0x1;
+        var I2Value = 0x2;
+        var I3Value = 0x3;
+
+        var testProgram = [
+            0xf3,
+            0x65
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.RAM[I] = IValue;
+        interpreter.RAM[I + 1] = I1Value;
+        interpreter.RAM[I + 2] = I2Value;
+        interpreter.RAM[I + 3] = I3Value;
+
+        interpreter.I = I;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.equal(
+            IValue,
+            interpreter.registers[0x0],
+            'Register 0 value should equal value at I'
+        );
+
+        assert.equal(
+            I1Value,
+            interpreter.registers[0x1],
+            'Register 1 value should equal value at I + 1'
+        );
+
+        assert.equal(
+            I2Value,
+            interpreter.registers[0x2],
+            'Register 2 value should equal value at I + 2'
+        );
+
+        assert.equal(
+            I3Value,
+            interpreter.registers[0x3],
+            'Register 3 value should equal value at I + 3'
+        );
+    });
+
 });
 

@@ -1159,6 +1159,28 @@ Interpreter.prototype.dumpRegisters = function (registerXNum) {
     }
 };
 
+/**
+ * Fx65 - LD Vx, [I]
+ * Read registers V0 through Vx from memory starting at location I.
+ * 
+ * The interpreter reads values from memory starting at location I into
+ * registers V0 through Vx.
+ */
+Interpreter.prototype.loadRegisters = function (registerXNum) {
+    var I = this.I;
+
+    log.debug(
+        'Loading registers V0 -',
+        'V' + registerXNum.toString(16),
+        'from address',
+        '0x' + I.toString(16)
+    );
+
+    for(var regIndex = 0; regIndex <= registerXNum; regIndex += 1) {
+        this.registers[regIndex] = this.RAM[I + regIndex];
+    }
+};
+
 
 function randRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

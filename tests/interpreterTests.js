@@ -699,7 +699,8 @@ describe('interpreter', function() {
 
     it('8xyE - should bit shift left register x (no overflow)', function() {
         var registerXNum = 0x0;
-        var registerXValue = 0x7f;
+        var registerYNum = 0x1;
+        var registerYValue = 0x7f;
 
         var testProgram = [
             0x80,
@@ -707,7 +708,7 @@ describe('interpreter', function() {
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
-        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
         for(var i = 0; i < testProgram.length / 2; i += 1) {
@@ -717,7 +718,13 @@ describe('interpreter', function() {
         assert.equal(
             interpreter.registers[registerXNum],
             0xfe,
-            'Register X value should equal 0x3f'
+            'Register X value should equal 0xfe'
+        );
+
+        assert.equal(
+            interpreter.registers[registerYNum],
+            0x7f,
+            'Register Y value should equal 0x7f'
         );
 
         assert.equal(
@@ -729,7 +736,8 @@ describe('interpreter', function() {
 
     it('8xyE - should bit shift left register x (overflow)', function() {
         var registerXNum = 0x0;
-        var registerXValue = 0x80;
+        var registerYNum = 0x1;
+        var registerYValue = 0x80;
 
         var testProgram = [
             0x80,
@@ -737,7 +745,7 @@ describe('interpreter', function() {
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
-        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
         for(var i = 0; i < testProgram.length / 2; i += 1) {
@@ -747,7 +755,13 @@ describe('interpreter', function() {
         assert.equal(
             interpreter.registers[registerXNum],
             0x00,
-            'Register X value should equal 0x40'
+            'Register X value should equal 0x00'
+        );
+
+        assert.equal(
+            interpreter.registers[registerYNum],
+            0x80,
+            'Register Y value should equal 0x80'
         );
 
         assert.equal(

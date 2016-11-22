@@ -1181,7 +1181,7 @@ Interpreter.prototype.dumpRegisters = function (registerXNum) {
  * Read registers V0 through Vx from memory starting at location I.
  * 
  * The interpreter reads values from memory starting at location I into
- * registers V0 through Vx.
+ * registers V0 through Vx. I is then set to I + X + 1.
  */
 Interpreter.prototype.loadRegisters = function (registerXNum) {
     var I = this.I;
@@ -1196,6 +1196,8 @@ Interpreter.prototype.loadRegisters = function (registerXNum) {
     for(var regIndex = 0; regIndex <= registerXNum; regIndex += 1) {
         this.registers[regIndex] = this.RAM[I + regIndex];
     }
+
+    this.I = I + registerXNum + 1;
 };
 
 

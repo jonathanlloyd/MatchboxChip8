@@ -1532,6 +1532,12 @@ describe('interpreter', function() {
             interpreter.registers[0x3],
             'Register 3 value should equal value at I + 3'
         );
+
+        assert.equal(
+            interpreter.I,
+            I + registerXNum + 1,
+            'Register I should equal I + Vx + 1'
+        );
     });
 
 });

@@ -147,11 +147,13 @@ var INSTRUCTION_MAP = {
         };
     },
     "^8(.)(.)6$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16);
+        var registerNumberX = parseInt(matchResult[1], 16),
+            registerNumberY = parseInt(matchResult[2], 16);
 
         return function () {
             interpreter.shrRegister(
-                registerNumberX
+                registerNumberX,
+                registerNumberY
             );
         };
     },

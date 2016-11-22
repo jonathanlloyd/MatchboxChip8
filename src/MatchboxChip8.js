@@ -686,20 +686,24 @@ Interpreter.prototype.subRegister = function (
 
 /**
  * 8xy6 - SHR Vx {, Vy}
- * Set Vx = Vx SHR 1.
+ * Set Vy = Vx SHR 1.
  * 
- * If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0.
- * Then Vx is divided by 2.
+ * If the least-significant bit of Vy is 1, then VF is set to 1, otherwise 0.
+ * Then Vy is divided by 2 and set in Vx.
  */
-Interpreter.prototype.shrRegister = function (registerNumberX) {
+Interpreter.prototype.shrRegister = function (
+    registerNumberX,
+    registerNumberY
+    ) {
     log.debug(
-        "Bit shifting the value of register V",
-        registerNumberX,
-        'right.'
+        'Bit shifting the value of register',
+        'V' + registerNumberY,
+        'right, into register',
+        'V' + registerNumberX
     );
-    var registerXValue = this.registers[registerNumberX];
-    var result = registerXValue >> 1;
-    var overflowBit = registerXValue % 2 === 1;
+    var registerYValue = this.registers[registerNumberY];
+    var result = registerYValue >> 1;
+    var overflowBit = registerYValue % 2 === 1;
 
     this.registers[registerNumberX] = result;
     this.registers[0xF] = overflowBit;

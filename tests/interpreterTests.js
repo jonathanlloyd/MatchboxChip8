@@ -559,7 +559,8 @@ describe('interpreter', function() {
 
     it('8xy6 - should bit shift right register x (no overflow)', function() {
         var registerXNum = 0x0;
-        var registerXValue = 0x04;
+        var registerYNum = 0x1;
+        var registerYValue = 0x04;
 
         var testProgram = [
             0x80,
@@ -567,7 +568,7 @@ describe('interpreter', function() {
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
-        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
         for(var i = 0; i < testProgram.length / 2; i += 1) {
@@ -578,6 +579,12 @@ describe('interpreter', function() {
             interpreter.registers[registerXNum],
             0x02,
             'Register X value should equal 2'
+        );
+
+        assert.equal(
+            interpreter.registers[registerYNum],
+            0x04,
+            'Register Y value should equal 4'
         );
 
         assert.equal(
@@ -589,7 +596,8 @@ describe('interpreter', function() {
 
     it('8xy6 - should bit shift right register x (overflow)', function() {
         var registerXNum = 0x0;
-        var registerXValue = 0x05;
+        var registerYNum = 0x1;
+        var registerYValue = 0x05;
 
         var testProgram = [
             0x80,
@@ -597,7 +605,7 @@ describe('interpreter', function() {
         ];
 
         var interpreter = new MatchboxChip8.Interpreter();
-        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.registers[registerYNum] = registerYValue;
 
         interpreter.loadInstructions(testProgram);
         for(var i = 0; i < testProgram.length / 2; i += 1) {
@@ -608,6 +616,12 @@ describe('interpreter', function() {
             interpreter.registers[registerXNum],
             0x02,
             'Register X value should equal 2'
+        );
+
+        assert.equal(
+            interpreter.registers[registerYNum],
+            0x05,
+            'Register Y value should equal 5'
         );
 
         assert.equal(

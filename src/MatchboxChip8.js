@@ -1147,7 +1147,7 @@ Interpreter.prototype.writeBCD = function (registerXNum) {
  * Store registers V0 through Vx in memory starting at location I.
  * 
  * The interpreter copies the values of registers V0 through Vx into memory,
- * starting at the address in I.
+ * starting at the address in I. I is then set to I + X + 1.
  */
 Interpreter.prototype.dumpRegisters = function (registerXNum) {
     var I = this.I;
@@ -1162,6 +1162,14 @@ Interpreter.prototype.dumpRegisters = function (registerXNum) {
     for(var regIndex = 0; regIndex <= registerXNum; regIndex += 1) {
         this.RAM[I + regIndex] = this.registers[regIndex];
     }
+
+    log.debug(
+        'I is set to I +',
+        registerXNum,
+        '+ 1'
+    );
+
+    this.I = I + registerXNum + 1;
 };
 
 /**

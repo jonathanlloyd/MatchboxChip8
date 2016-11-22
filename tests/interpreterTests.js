@@ -1458,6 +1458,12 @@ describe('interpreter', function() {
             JSON.stringify(expectedArray),
             JSON.stringify(resultArray)
         );
+
+        assert.equal(
+            interpreter.I,
+            I + registerXNum + 1,
+            'Register I should equal I + Vx + 1'
+        );
     });
 
     it('Fx65 - Should load registers from RAM from r\'i', function() {

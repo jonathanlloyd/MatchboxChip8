@@ -46,8 +46,9 @@ var TIMER_FREQUENCY = 60;
 /**
  * Matchbox interpreter
  * @constructor
- * @param {CanvasRenderingContext2D} context - The 2D canvas drawing
- *     context used to draw the screen for the VM.
+ * @param {Boolean} debugMode - A boolean describing whether or not to enable
+ *     debug logging. Debugging will be enabled if this value is true and
+       will be disabled otherwise.
  */
 var Interpreter = function (debugMode) {
     debugMode = debugMode || false;

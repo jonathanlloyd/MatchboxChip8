@@ -6,320 +6,230 @@
  * @module disassembly
  */
 
-var INSTRUCTION_MAP = {
-    "^00e0$": function (interpreter) {
-        return function () {
-            interpreter.clearDisplay();
-        };
-    },
-    "^00ee$": function (interpreter) {
-        return function () {
-            interpreter.subroutineReturn();
-        };
-    },
-    "^1(...)$": function (interpreter, matchResult) {
-        var jumpAddress = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.jump(jumpAddress);
-        };
-    },
-    "^2(...)$": function (interpreter, matchResult) {
-        var callAddress = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.call(callAddress);
-        };
-    },
-    "^3(.)(..)$": function (interpreter, matchResult) {
-        var registerNumber = parseInt(matchResult[1], 16),
-            immediateValue = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.skipEqualImmediate(registerNumber, immediateValue);
-        };
-    },
-    "^4(.)(..)$": function (interpreter, matchResult) {
-        var registerNumber = parseInt(matchResult[1], 16),
-            immediateValue = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.skipNotEqualImmediate(registerNumber, immediateValue);
-        };
-    },
-    "^5(.)(.)0$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.skipEqual(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^6(.)(..)$": function (interpreter, matchResult) {
-        var registerNumber = parseInt(matchResult[1], 16),
-            immediateValue = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.loadRegisterImmediate(
-                registerNumber,
-                immediateValue
-            );
-        };
-    },
-    "^7(.)(..)$": function (interpreter, matchResult) {
-        var registerNumber = parseInt(matchResult[1], 16),
-            immediateValue = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.addRegisterImmediate(
-                registerNumber,
-                immediateValue
-            );
-        };
-    },
-    "^8(.)(.)0$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.loadRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^8(.)(.)1$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.orRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^8(.)(.)2$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.andRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^8(.)(.)3$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.xorRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^8(.)(.)4$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.addRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^8(.)(.)5$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.subRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^8(.)(.)6$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.shrRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^8(.)(.)7$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.subnRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^8(.)(.)e$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.shlRegister(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^9(.)(.)0$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.skipNotEqual(
-                registerNumberX,
-                registerNumberY
-            );
-        };
-    },
-    "^a(...)$": function (interpreter, matchResult) {
-        var value = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.setI(value);
-        };
-    },
-    "^b(...)$": function (interpreter, matchResult) {
-        var value = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.jumpPlus(value);
-        };
-    },
-    "^c(.)(..)$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            value = parseInt(matchResult[2], 16);
-
-        return function () {
-            interpreter.loadRand(registerNumberX, value);
-        };
-    },
-    "^d(.)(.)(.)$": function (interpreter, matchResult) {
-        var registerNumberX = parseInt(matchResult[1], 16),
-            registerNumberY = parseInt(matchResult[2], 16),
-            spriteHeight = parseInt(matchResult[3], 16);
-
-        return function () {
-            interpreter.drawSprite(
-                registerNumberX,
-                registerNumberY,
-                spriteHeight
-            );
-        };
-    },
-    "^e(.)9e$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.skipKeyPressed(registerXNum);
-        };
-    },
-    "^e(.)a1$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.skipKeyNotPressed(registerXNum);
-        };
-    },
-    "^f(.)07$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.setRegisterDT(registerXNum);
-        };
-    },
-    "^f(.)0a$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.waitForKeyDown(registerXNum);
-        };
-    },
-    "^f(.)15$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.setDT(registerXNum);
-        };
-    },
-    "^f(.)18$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.setST(registerXNum);
-        };
-    },
-    "^f(.)1e$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.addIRegister(registerXNum);
-        };
-    },
-    "^f(.)29$": function (interpreter, matchResult) {
-        var charIndex = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.loadCharAddress(charIndex);
-        };
-    },
-    "^f(.)33$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.writeBCD(registerXNum);
-        };
-    },
-    "^f(.)55$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.dumpRegisters(registerXNum);
-        };
-    },
-    "^f(.)65$": function (interpreter, matchResult) {
-        var registerXNum = parseInt(matchResult[1], 16);
-
-        return function () {
-            interpreter.loadRegisters(registerXNum);
-        };
-    }
-};
-
 
 /**
- * Transform integer opcodes into zero-padded 4 character hex strings
- * @param {number} instruction - Numeric opcode value
+ * Decode a numeric instruction into a lambda containing the needed
+ * interpreter function with the necessary parameters embedded in the
+ * closure.
+ * @param {Number} rawInstruction - Numeric representation of an instruction
+ * @param {Interpreter} interpreter - Reference to interpreter
+ * @return {Function} insruction - Callable instruction object
  */
-function instructionToHexString(instruction) {
-    var hexString = instruction.toString(16),
-        numberMissingChars = 4 - hexString.length;
-    for (var i = 0; i < numberMissingChars; i += 1) {
-        hexString = "0" + hexString;
-    }
-    return hexString;
-}
+var decodeInstruction = function(rawInstruction, interpreter) {
+    var firstNibble = (rawInstruction & 0xF000) >> 12;
+    var lastNibble = rawInstruction & 0x000F;
 
+    /*
+     *  Common variables as stated in spec
+     *  -----------------------------------
+     *  |  x  | Second nibble             |
+     *  -----------------------------------
+     *  |  y  | Third nibble              |
+     *  -----------------------------------
+     *  | kk  | Last 2 nibbles            |
+     *  -----------------------------------
+     *  | nnn | Last 3 nibbles            |
+     *  -----------------------------------
+     */
+    var x = (rawInstruction & 0x0F00) >> 8;
+    var y = (rawInstruction & 0x00F0) >> 4;
+    var kk = rawInstruction & 0x00FF;
+    var nnn = rawInstruction & 0x0FFF;
+
+    switch(firstNibble) {
+        case 0x0:
+            switch(lastNibble) {
+                case 0x0:
+                    return function () {
+                        interpreter.clearDisplay();
+                    };
+                case 0xe:
+                    return function () {
+                        interpreter.subroutineReturn();
+                    };
+            }
+
+            break;
+
+        case 0x1:
+            return function () {
+                interpreter.jump(nnn);
+            };
+
+        case 0x2:
+            return function () {
+                interpreter.call(nnn);
+            };
+
+        case 0x3:
+            return function () {
+                interpreter.skipEqualImmediate(x, kk);
+            };
+
+        case 0x4:
+            return function () {
+                interpreter.skipNotEqualImmediate(x, kk);
+            };
+
+        case 0x5:
+            return function () {
+                interpreter.skipEqual(x, y);
+            };
+
+        case 0x6:
+            return function () {
+                interpreter.loadRegisterImmediate(x, kk);
+            };
+
+        case 0x7:
+            return function () {
+                interpreter.addRegisterImmediate(x, kk);
+            };
+
+        case 0x8:
+            switch(lastNibble) {
+                case 0x0:
+                    return function () {
+                        interpreter.loadRegister(x, y);
+                    };
+
+                case 0x1:
+                    return function () {
+                        interpreter.orRegister(x, y);
+                    };
+
+                case 0x2:
+                    return function () {
+                        interpreter.andRegister(x, y);
+                    };
+
+                case 0x3:
+                    return function () {
+                        interpreter.xorRegister(x, y);
+                    };
+
+                case 0x4:
+                    return function () {
+                        interpreter.addRegister(x, y);
+                    };
+
+                case 0x5:
+                    return function () {
+                        interpreter.subRegister(x, y);
+                    };
+
+                case 0x6:
+                    return function () {
+                        interpreter.shrRegister(x, y);
+                    };
+
+                case 0x7:
+                    return function () {
+                        interpreter.subnRegister(x, y);
+                    };
+
+                case 0xe:
+                    return function () {
+                        interpreter.shlRegister(x, y);
+                    };
+            }
+
+            break;
+
+        case 0x9:
+            return function () {
+                interpreter.skipNotEqual(x, y);
+            };
+
+        case 0xa:
+            return function () {
+                interpreter.setI(nnn);
+            };
+
+        case 0xb:
+            return function () {
+                interpreter.jumpPlus(nnn);
+            };
+
+        case 0xc:
+            return function () {
+                interpreter.loadRand(x, kk);
+            };
+
+        case 0xd:
+            return function () {
+                interpreter.drawSprite(x, y, lastNibble);
+            };
+
+        case 0xe:
+            switch(lastNibble) {
+                case 0xe:
+                    return function () {
+                        interpreter.skipKeyPressed(x);
+                    };
+                case 0x1:
+                    return function () {
+                        interpreter.skipKeyNotPressed(x);
+                    };
+            }
+
+            break;
+
+        case 0xf:
+            switch(lastNibble) {
+                case 0x7:
+                    return function () {
+                        interpreter.setRegisterDT(x);
+                    };
+
+                case 0xa:
+                    return function () {
+                        interpreter.waitForKeyDown(x);
+                    };
+
+                case 0x8:
+                    return function () {
+                        interpreter.setST(x);
+                    };
+
+                case 0xe:
+                    return function () {
+                        interpreter.addIRegister(x);
+                    };
+
+                case 0x9:
+                    return function () {
+                        interpreter.loadCharAddress(x);
+                    };
+
+                case 0x3:
+                    return function () {
+                        interpreter.writeBCD(x);
+                    };
+
+                case 0x5:
+                    switch(y) {
+                        case 0x1:
+                            return function () {
+                                interpreter.setDT(x);
+                            };
+
+                        case 0x5:
+                            return function () {
+                                interpreter.dumpRegisters(x);
+                            };
+
+                        case 0x6:
+                            return function () {
+                                interpreter.loadRegisters(x);
+                            };
+                    }
+            }
+    }
+
+    return null;
+};
 
 module.exports = {
-    INSTRUCTION_MAP: INSTRUCTION_MAP,
-    instructionToHexString: instructionToHexString
+    decodeInstruction: decodeInstruction
 };

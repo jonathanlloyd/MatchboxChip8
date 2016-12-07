@@ -206,14 +206,20 @@ Interpreter.prototype.step = function() {
     var highByte = this.RAM[this.PC];
     var lowByte = this.RAM[this.PC + 1];
     var rawInstruction = (highByte << 8) | lowByte;
+    var instructionString = rawInstruction.toString(16);
 
     // Decode instruction
-    log.debug("Decoding instruction 0x" + rawInstruction.toString(16));
-    var decodedInstruction = this.decodeInstruction(rawInstruction);
+    log.debug("Decoding instruction 0x" + instructionString);
+    var decodedInstruction = disassembly.decodeInstruction(
+        rawInstruction,
+        this
+    );
 
     // Execute instruction
     if(decodedInstruction !== null) {
         decodedInstruction();
+    } else {
+        log.warn("Invalid instruction 0x" + instructionString);
     }
 
     // Run timer logic
@@ -244,32 +250,6 @@ Interpreter.prototype.stepTimers = function() {
     }
 
     this._lastStepTime = now;
-};
-
-/**
- * Decode a numeric instruction into a lambda containing the needed
- * interpreter function with the necessary parameters embedded in the
- * closure.
- * @param {Number} rawInstruction - Numeric representation of an instruction
- * @return {Function} insruction - Callable instruction object
- */
-Interpreter.prototype.decodeInstruction = function(rawInstruction) {
-    var hexString = disassembly.instructionToHexString(rawInstruction);
-
-    for(var propertyName in disassembly.INSTRUCTION_MAP) {
-        if(disassembly.INSTRUCTION_MAP.hasOwnProperty(propertyName)) {
-            var instructionRe = propertyName;
-            var matchResult = hexString.match(instructionRe);
-            if(matchResult !== null) {
-                var instructionGenerator = 
-                    disassembly.INSTRUCTION_MAP[instructionRe];
-                return instructionGenerator(this, matchResult);
-            }
-        }
-    }
-
-    log.warn("Invalid instruction: 0x", hexString);
-    return null;
 };
 
 /**

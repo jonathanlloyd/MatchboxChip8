@@ -922,6 +922,9 @@ describe('interpreter', function() {
         var interpreter = new MatchboxChip8.Interpreter();
         interpreter.loadInstructions(testProgram);
 
+        //Set an overlapping but not colliding bit
+        interpreter.setPixel(2, 4, 1);
+
         interpreter.registers[registerXNum] = registerXValue;
         interpreter.registers[registerYNum] = registerYValue;
         interpreter.I = I;
@@ -935,7 +938,7 @@ describe('interpreter', function() {
             [0, 0, 0, 0, 0, 0, 0, 0],
             [0, 1, 1, 1, 1, 0, 0, 0],
             [0, 1, 0, 0, 1, 0, 0, 0],
-            [0, 1, 0, 0, 1, 0, 0, 0],
+            [0, 1, 1, 0, 1, 0, 0, 0],
             [0, 1, 0, 0, 1, 0, 0, 0],
             [0, 1, 1, 1, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0]
@@ -957,6 +960,12 @@ describe('interpreter', function() {
             expectedPixelsStr,
             resultPixelsStr,
             '0 sprite should be drawn'
+        );
+
+        assert.equal(
+            interpreter.registers[0xF],
+            0,
+            'Collision bit should not be set'
         );
     });
 

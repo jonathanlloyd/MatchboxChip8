@@ -885,11 +885,12 @@ Interpreter.prototype.drawSprite = function (
             var drawY = (y + yCoord) % 32;
 
             var oldPixel = this.getPixel(drawX, drawY);
-            if(oldPixel === 1) {
+            var newPixel = (spriteByte >> 7 - x) & 1;
+
+            if(oldPixel === 1 && newPixel === 1) {
                 this.registers[0xf] = 1;
             }
 
-            var newPixel = (spriteByte >> 7 - x) & 1;
             this.setPixel(drawX, drawY, newPixel ^ oldPixel);
         }
     }

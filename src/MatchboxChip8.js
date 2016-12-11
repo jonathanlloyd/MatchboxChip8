@@ -662,7 +662,7 @@ Interpreter.prototype.subRegister = function (
     var borrowBit = registerYValue > registerXValue;
 
     this.registers[registerNumberX] = result;
-    this.registers[0xF] = borrowBit;
+    this.registers[0xF] = Number(borrowBit);
 };
 
 /**
@@ -687,7 +687,7 @@ Interpreter.prototype.shrRegister = function (
     var overflowBit = registerYValue % 2 === 1;
 
     this.registers[registerNumberX] = result;
-    this.registers[0xF] = overflowBit;
+    this.registers[0xF] = Number(overflowBit);
 };
 
 /**
@@ -713,7 +713,7 @@ Interpreter.prototype.subnRegister = function (
     var borrowBit = registerYValue <= registerXValue;
 
     this.registers[registerNumberX] = result;
-    this.registers[0xF] = borrowBit;
+    this.registers[0xF] = Number(borrowBit);
 };
 
 /**
@@ -738,7 +738,7 @@ Interpreter.prototype.shlRegister = function (
     var overflowBit = (registerYValue & (1 << 7)) === 128;
 
     this.registers[registerNumberX] = result;
-    this.registers[0xF] = overflowBit;
+    this.registers[0xF] = Number(overflowBit);
 };
 
 /**

@@ -21,7 +21,7 @@ describe('interpreter', function() {
         for(var x = 0; x < 64; x += 1) {
             for(var y = 0; y < 32; y += 1) {
               var pixel = interpreter.getPixel(x, y);
-              assert.equal(pixel, 0);
+              assert.strictEqual(pixel, 0);
             }
         }
     });
@@ -45,12 +45,12 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldStackTop,
             'Program counter should equal old top of stack'
         );
-        assert.equal(
+        assert.strictEqual(
             interpreter.SP,
             oldSP - 1,
             'Stack pointer should be decremented by 1'
@@ -72,7 +72,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             testTargetAddress,
             'Program counter should equal target address'
@@ -97,17 +97,17 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.SP,
             oldSP + 1,
             'Stack pointer should increase by 1'
         );
-        assert.equal(
+        assert.strictEqual(
             interpreter.stack[0],
             oldPC + 2,
             'Top of stack should equal old program counter value plus 2'
         );
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             testTargetAddress,
             'Program counter should equal target address'
@@ -132,7 +132,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 4,
             'Program counter should increase by 4'
@@ -157,7 +157,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 2,
             'Program counter should increase by 2'
@@ -182,7 +182,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 2,
             'Program counter should increase by 2'
@@ -207,7 +207,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 4,
             'Program counter should increase by 4'
@@ -234,7 +234,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 4,
             'Program counter should increase by 4'
@@ -262,7 +262,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 2,
             'Program counter should increase by 2'
@@ -285,7 +285,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             byteValue,
             'Register X value should equal byte value'
@@ -310,7 +310,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             byteValue + registerXValue,
             'Register X value should equal byte value + old value'
@@ -337,7 +337,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             registerYValue,
             'Register X value should equal register Y value'
@@ -364,7 +364,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             registerYValue | registerXValue,
             'Register X value should equal ry OR rx'
@@ -391,7 +391,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             registerYValue & registerXValue,
             'Register X value should equal ry AND rx'
@@ -418,7 +418,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             registerYValue ^ registerXValue,
             'Register X value should equal ry XOR rx'
@@ -445,13 +445,13 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             registerYValue + registerXValue,
             'Register X value should equal ry ADD rx'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             0,
             'Register 0xF value (carry bit) should equal 0'
@@ -478,13 +478,13 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             registerYValue - 1,
             'Register X value should equal ry - 1'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             1,
             'Register 0xF value (carry bit) should equal 1'
@@ -511,13 +511,13 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             0x01,
             'Register X value should equal rx - ry'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             0,
             'Register 0xF value (borrow bit) should equal 0'
@@ -544,13 +544,13 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             0x01,
             'Register X value should equal abs(rx - ry)'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             1,
             'Register 0xF value (borrow bit) should equal 1'
@@ -575,19 +575,19 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             0x02,
             'Register X value should equal 2'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerYNum],
             0x04,
             'Register Y value should equal 4'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             0,
             'Register 0xF value (overflow bit) should equal 0'
@@ -612,19 +612,19 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             0x02,
             'Register X value should equal 2'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerYNum],
             0x05,
             'Register Y value should equal 5'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             1,
             'Register 0xF value (overflow bit) should equal 1'
@@ -651,13 +651,13 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             0x01,
             'Register X value should equal rx - ry'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             1,
             'Register 0xF value (borrow bit) should equal 1'
@@ -684,13 +684,13 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             0x01,
             'Register X value should equal abs(rx - ry)'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             0,
             'Register 0xF value (borrow bit) should equal 0'
@@ -715,19 +715,19 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             0xfe,
             'Register X value should equal 0xfe'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerYNum],
             0x7f,
             'Register Y value should equal 0x7f'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             0,
             'Register 0xF value (overflow bit) should equal 0'
@@ -752,19 +752,19 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             0x00,
             'Register X value should equal 0x00'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerYNum],
             0x80,
             'Register Y value should equal 0x80'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             1,
             'Register 0xF value (overflow bit) should equal 1'
@@ -792,7 +792,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 2,
             'Program counter should increase by 2'
@@ -820,7 +820,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 4,
             'Program counter should increase by 4'
@@ -842,7 +842,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.I,
             value,
             'Register I should equal value'
@@ -866,7 +866,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             register0Value + value,
             'PC should equal register 0 value + nnn value'
@@ -897,7 +897,7 @@ describe('interpreter', function() {
                 interpreter.step();
             };
 
-            assert.equal(
+            assert.strictEqual(
                 interpreter.registers[registerXNum],
                 0x02,
                 'r\'0 should equal 0x02'
@@ -956,13 +956,13 @@ describe('interpreter', function() {
         var expectedPixelsStr = JSON.stringify(expectedPixels);
         var resultPixelsStr = JSON.stringify(resultPixels);
 
-        assert.equal(
+        assert.strictEqual(
             expectedPixelsStr,
             resultPixelsStr,
             '0 sprite should be drawn'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             0,
             'Collision bit should not be set'
@@ -1016,7 +1016,7 @@ describe('interpreter', function() {
         var expectedPixelsStr = JSON.stringify(expectedPixels);
         var resultPixelsStr = JSON.stringify(resultPixels);
 
-        assert.equal(
+        assert.strictEqual(
             expectedPixelsStr,
             resultPixelsStr,
             'Wrapped 0 sprite should be drawn'
@@ -1063,13 +1063,13 @@ describe('interpreter', function() {
         var expectedPixelsStr = JSON.stringify(expectedPixels);
         var resultPixelsStr = JSON.stringify(resultPixels);
 
-        assert.equal(
+        assert.strictEqual(
             expectedPixelsStr,
             resultPixelsStr,
             'XORed sprite should be drawn'
         )
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[0xF],
             1,
             'Collision bit should be set'
@@ -1096,7 +1096,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 4,
             'PC should equal old value + 4'
@@ -1121,7 +1121,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 2,
             'PC should equal old value + 2'
@@ -1147,7 +1147,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 2,
             'PC should equal old value + 2'
@@ -1174,7 +1174,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.PC,
             oldPC + 4,
             'PC should equal old value + 4'
@@ -1198,7 +1198,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             delayTimerValue,
             'Register x should equal delay timer value'
@@ -1229,13 +1229,13 @@ describe('interpreter', function() {
 
         interpreter.step();
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[registerXNum],
             keyCode,
             'Register x should equal keycode'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.registers[
                 testRegisterNum
             ],
@@ -1280,13 +1280,13 @@ describe('interpreter', function() {
             interpreter.step();
         });
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.DT,
             60,
             'Delay timer should decrease by 60'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.ST,
             0,
             'Sound time should cap at 0'
@@ -1311,7 +1311,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.DT,
             registerXValue,
             'Delay timer should equal register x value'
@@ -1336,7 +1336,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.ST,
             registerXValue,
             'Sound timer should equal register x value'
@@ -1363,7 +1363,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.I,
             0x2,
             'Register I should equal 2'
@@ -1388,7 +1388,7 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.I,
             0xf * 5,
             'Register I should equal 0xf * 5'
@@ -1415,19 +1415,19 @@ describe('interpreter', function() {
 
         var I = interpreter.I;
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.RAM[I],
             0x2,
             'RAM[i] should equal BCD of 2'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.RAM[I + 1],
             0x5,
             'RAM[i + 1] should equal BCD of 5'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.RAM[I + 2],
             0x5,
             'RAM[i + 2] should equal BCD of 5'
@@ -1477,12 +1477,12 @@ describe('interpreter', function() {
             interpreter.RAM[I + 3]
         ];
 
-        assert.equal(
+        assert.strictEqual(
             JSON.stringify(expectedArray),
             JSON.stringify(resultArray)
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.I,
             I + registerXNum + 1,
             'Register I should equal I + Vx + 1'
@@ -1518,31 +1518,31 @@ describe('interpreter', function() {
             interpreter.step();
         };
 
-        assert.equal(
+        assert.strictEqual(
             IValue,
             interpreter.registers[0x0],
             'Register 0 value should equal value at I'
         );
 
-        assert.equal(
+        assert.strictEqual(
             I1Value,
             interpreter.registers[0x1],
             'Register 1 value should equal value at I + 1'
         );
 
-        assert.equal(
+        assert.strictEqual(
             I2Value,
             interpreter.registers[0x2],
             'Register 2 value should equal value at I + 2'
         );
 
-        assert.equal(
+        assert.strictEqual(
             I3Value,
             interpreter.registers[0x3],
             'Register 3 value should equal value at I + 3'
         );
 
-        assert.equal(
+        assert.strictEqual(
             interpreter.I,
             I + registerXNum + 1,
             'Register I should equal I + Vx + 1'

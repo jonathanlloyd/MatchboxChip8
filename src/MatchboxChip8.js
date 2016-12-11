@@ -642,7 +642,7 @@ Interpreter.prototype.addRegister = function (
 
 /**
  * 8xy5 - SUB Vx, Vy
- * Set Vx = Vx - Vy, set VF = NOT borrow.
+ * Set Vx = Vx - Vy, set VF = borrow.
  * 
  * If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from 
  * Vx, and the results stored in Vx.
@@ -659,7 +659,7 @@ Interpreter.prototype.subRegister = function (
     );
     var registerXValue = this.registers[registerNumberX];
     var registerYValue = this.registers[registerNumberY];
-    var result = Math.abs(registerYValue - registerXValue);
+    var result = Math.abs(registerXValue - registerYValue);
     var borrowBit = registerYValue > registerXValue;
 
     this.registers[registerNumberX] = result;
@@ -693,7 +693,7 @@ Interpreter.prototype.shrRegister = function (
 
 /**
  * 8xy7 - SUBN Vx, Vy
- * Set Vx = Vy - Vx, set VF = NOT borrow.
+ * Set Vx = Vy - Vx, set VF = borrow.
  * 
  * If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from
  * Vy, and the results stored in Vx.
@@ -704,14 +704,14 @@ Interpreter.prototype.subnRegister = function (
     ) {
     log.debug(
         "SUBing the value of register V",
-        registerNumberY,
+        registerNumberX,
         " from register V",
-        registerNumberX
+        registerNumberY
     );
     var registerXValue = this.registers[registerNumberX];
     var registerYValue = this.registers[registerNumberY];
     var result = Math.abs(registerYValue - registerXValue);
-    var borrowBit = registerYValue <= registerXValue;
+    var borrowBit = registerXValue > registerYValue;
 
     this.registers[registerNumberX] = result;
     this.registers[0xF] = Number(borrowBit);

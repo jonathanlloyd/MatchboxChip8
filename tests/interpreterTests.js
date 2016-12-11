@@ -317,6 +317,31 @@ describe('interpreter', function() {
         );
     });
 
+    it('7xkk - should add byte value to register (overflow)', function() {
+        var registerXNum = 0x0;
+        var registerXValue = 0x2;
+        var byteValue = 0xFF;
+
+        var testProgram = [
+            0x70,
+            0xff
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.registers[registerXNum] = registerXValue;
+
+        interpreter.loadInstructions(testProgram);
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.strictEqual(
+            interpreter.registers[registerXNum],
+            0x1,
+            'Register X value should equal byte value + old value (wrapped)'
+        );
+    });
+
     it('8xy0 - should load register y into register x', function() {
         var registerXNum = 0x0;
         var registerYNum = 0x1;

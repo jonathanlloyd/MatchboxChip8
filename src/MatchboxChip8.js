@@ -512,7 +512,8 @@ Interpreter.prototype.addRegisterImmediate = function (
         " to register V",
         registerNumber
     );
-    this.registers[registerNumber] += immediateValue;
+    this.registers[registerNumber] =
+        (this.registers[registerNumber] + immediateValue) % 256;
 };
 
 /**

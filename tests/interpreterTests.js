@@ -1395,6 +1395,33 @@ describe('interpreter', function() {
         );
     });
 
+    it('Fx1E - should add register x into I (overflow)', function() {
+        var registerXNum = 1;
+        var registerXValue = 0x3;
+        var I = 0xFFFF;
+
+        var testProgram = [
+            0xf1,
+            0x1e
+        ];
+
+        var interpreter = new MatchboxChip8.Interpreter();
+        interpreter.loadInstructions(testProgram);
+
+        interpreter.registers[registerXNum] = registerXValue;
+        interpreter.I = I;
+
+        for(var i = 0; i < testProgram.length / 2; i += 1) {
+            interpreter.step();
+        };
+
+        assert.strictEqual(
+            interpreter.I,
+            0x2,
+            'Register I should equal 2'
+        );
+    });
+
     it('Fx29 - should load the address of bitmap char into r\'i', function() {
         var registerXNum = 1;
         var registerXValue = 0xf;

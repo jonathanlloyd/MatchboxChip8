@@ -1059,7 +1059,7 @@ Interpreter.prototype.setST = function (registerXNum) {
 Interpreter.prototype.addIRegister = function (registerXNum) {
     var IValue = this.I;
     var registerXValue = this.registers[registerXNum];
-    var result = IValue + registerXValue;
+    var result = (IValue + registerXValue) % 65536;
 
     log.debug(
         'Adding value of register',

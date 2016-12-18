@@ -663,7 +663,7 @@ Interpreter.prototype.subRegister = function (
     var registerXValue = this.registers[registerNumberX];
     var registerYValue = this.registers[registerNumberY];
     var result = Math.abs(registerXValue - registerYValue);
-    var borrowBit = registerYValue > registerXValue;
+    var borrowBit = registerXValue > registerYValue;
 
     this.registers[registerNumberX] = result;
     this.registers[0xF] = Number(borrowBit);

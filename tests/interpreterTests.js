@@ -519,8 +519,8 @@ describe('interpreter', function() {
     it('8xy5 - should SUB register y from r\' x (no borrow)', function() {
         var registerXNum = 0x0;
         var registerYNum = 0x1;
-        var registerXValue = 0x05;
-        var registerYValue = 0x04;
+        var registerXValue = 0x04;
+        var registerYValue = 0x05;
 
         var testProgram = [
             0x80,
@@ -552,8 +552,8 @@ describe('interpreter', function() {
     it('8xy5 - should SUB register y from r\' x (borrow)', function() {
         var registerXNum = 0x0;
         var registerYNum = 0x1;
-        var registerXValue = 0x04;
-        var registerYValue = 0x05;
+        var registerXValue = 0x05;
+        var registerYValue = 0x04;
 
         var testProgram = [
             0x80,

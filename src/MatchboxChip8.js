@@ -177,10 +177,13 @@ Interpreter.prototype.reset = function () {
  * @param {File || string} rom - A File Object containing the ROM data or
  *     a URL to such a file.
  */
-Interpreter.prototype.insertRom = function (rom) {
+Interpreter.prototype.insertRom = function (rom, callback) {
     var interpreter = this;
     rom_loading.load_rom(rom, function (instructions) {
         interpreter.loadInstructions(instructions);
+        if(callback) {
+            callback();
+        }
     });
 };
 

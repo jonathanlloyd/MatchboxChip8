@@ -1,0 +1,137 @@
+.main {
+  background-color: #0a0a0a;
+  background: url(../images/header.png);
+  background-size: cover;
+  background-position: center center;
+  padding: 3em 0;
+  text-align: center;
+  min-width: 1300px;
+  min-height: 550px;
+}
+
+.main canvas {
+  background: white;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 1);
+  background: url(../images/placeholder.png);
+  background-size: contain;
+  max-width: 640px;
+  width:100%;
+}
+
+.demo-section {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  min-width: 300px;
+}
+
+.demo-header {
+  font-family: 'Russo One', sans-serif;
+  font-weight: bold;
+  font-size: 1.5em;
+  text-transform: uppercase;
+  padding-bottom: 0.3em;
+  color: #81ce00;
+  text-shadow: 0px 2px 2px rgba(0, 0, 0, 1);
+}
+
+.demo-keyboard {
+  background: rgb(17,45,0);
+  display: inline-block;
+  padding: 0.5em;
+  border-radius: 0.2em;
+}
+
+.demo-key {
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 1);
+  font-size: 1.4em;
+  display: inline-block;
+  position: relative;
+  width: 2em;
+  height: 2em;
+  background: #81ce00;
+  margin: 0.2em 0.1em;
+  padding: 0;
+  cursor: default;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;  
+}
+
+.demo-key-active {
+  background: #C0FF52;
+  top: 1px;
+}
+
+.demo-key-chip {
+  position: absolute;
+  font-size: 0.6em;
+  opacity: 0.4;
+  right: 6px;
+}
+
+.demo-key-emu {
+}
+
+#demo-rom-loader-section {
+  padding-left: 1.4em;
+}
+
+#demo-rom-loader {
+  font-size: 0.7em;
+}
+
+.rom-card {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 1);
+  text-align: left;
+  background: #81ce00;
+  margin-bottom: 0.6em;
+  padding: 0.8em;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;  
+}
+
+.selected-rom {
+  border: 5px solid #C0FF52;
+}
+
+.rom-card:hover {
+  background: #C0FF52;
+  cursor: pointer;
+}
+
+.rom-card p {
+  margin: 0;
+  padding: 0;
+}
+
+.rom-card-name {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.rom-card-author {
+  opacity: 0.8;
+  font-style: italic;
+}
+
+#upload-rom-button {
+  background-color: #f1c40f;
+  color: black;
+  text-transform: uppercase;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 0.3em 1.3em;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 1);
+  border: none;
+  border-radius: 3px;
+  width: 100%;
+  margin-bottom: 0.5em;
+}
+
+#upload-rom-button:hover {
+  background-color: #F5DA6E;
+}

@@ -1,1 +1,12 @@
 language: node_js
+install:
+  - "npm install"
+script:
+  - "npm install -g webpack jshint"
+  - "make lint"
+  - "make check"
+after_success:
+  - "make deploy"
+env:
+  global:
+    secure: cZ2dEJ7CT074lCQpzmTjpkW0RuhixZTtTnU1hVPuqPvX0MP6ne25wyf8Td6AI4QJkQVAqJrL6hCQSvLqwIj/OO+nRfrGvAKg9qRYX5mqCq6JDxszuAGCmJcgZaccUSQafGn2SDmZUcGWIf8gr3uCax/bI4/VVVnYD4pS1qTEhnRRfT7wBnS87kRTL258TXd7jtvce6X9eh5PoOfa11GlOaYJThJhLMfk5E90VBNeQVoqPsZqZA9GVh97LqdnV7I6pSrn2eyOnGhjwKpW5+wkZKTzq99I83WrkNXlZXh3E7JlzKYYWyWUXwyvwNzxwi9k0GT9G1Yu9ahZqAst7mrrBbRCDWJo6z+uyxJqU3LFjrYUYMGAUna04g0VLE1Aj5xjZMVdPhdiNjUtA8yG93RL3Hh3aLxhdowtMYw7BMjLpQXWFzM86yakcs2pizHHgxIQwAQEVyjSzMshYdf3R/Df+Ur52WFnx03orniwez5YhE2vS6ngCUsdhai7xFbfX2Vb3msP4f7GWKsWzmMqMArp2hyc2bFXn0adVkiCH97KRxsuAvjciGLnpv6jv76eoDalViXFmerI0kYFyHG5lTj+cWAXdncS/G7WRkb+ww9cqaw4nF5P3yaXg55cwAtwzSTBoPBGG/fEfOyf49X1Fh4at8gK1SsQe2DxGuTD3psZK9g=

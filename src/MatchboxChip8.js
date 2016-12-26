@@ -179,7 +179,9 @@ Interpreter.prototype.reset = function () {
  */
 Interpreter.prototype.insertRom = function (rom, callback) {
     var interpreter = this;
+
     rom_loading.load_rom(rom, function (instructions) {
+        interpreter.reset();
         interpreter.loadInstructions(instructions);
         if(callback) {
             callback();

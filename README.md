@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/turingincomplete/MatchboxChip8.svg?branch=master)](https://travis-ci.org/turingincomplete/MatchboxChip8)
-
 # Matchbox - CHIP-8 Emulator
 A fully compatible emulator for CHIP-8 gaming hardware.
 
@@ -11,6 +9,15 @@ https://en.wikipedia.org/wiki/CHIP-8
 ## Hardware Spec
  - http://mattmik.com/files/chip8/mastering/chip8.html
  - http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
+
+## Build Status
+**Development**
+
+[![Build Status](https://travis-ci.org/turingincomplete/MatchboxChip8.svg?branch=development)](https://travis-ci.org/turingincomplete/MatchboxChip8)
+
+**Master**
+
+[![Build Status](https://travis-ci.org/turingincomplete/MatchboxChip8.svg?branch=master)](https://travis-ci.org/turingincomplete/MatchboxChip8)
 
 ## Building From Source
 ## Dependencies

@@ -19,9 +19,9 @@ https://en.wikipedia.org/wiki/CHIP-8
  - jshint
 
 ## Build
-'''bash
-npm install .
-make
-'''
+```bash
+$ npm install .
+$ make
+```
 
 Build of full demo site can then be found in ./dist/

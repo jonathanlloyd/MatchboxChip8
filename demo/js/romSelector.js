@@ -29,7 +29,7 @@ var romSelector = (function ($) {
             "year": "1990",
             "description": [
                 "Controls:",
-                "1 - P1 up, Q - P1 down, 4 - P2 up, R - P2 down"
+                "1 - up, Q - down"
             ].join('<br>')
         },
         {

@@ -4,6 +4,11 @@ echo "Deploying Matchbox..."
 
 GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
+if [ "$GIT_BRANCH" == "HEAD" ]
+then
+  GIT_BRANCH=$TRAVIS_BRANCH
+fi
+
 if [ "$GIT_BRANCH" == "master" ]
 then
   GH_REF="turingincomplete/MatchboxChip8"

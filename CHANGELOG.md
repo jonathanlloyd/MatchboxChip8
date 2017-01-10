@@ -3,6 +3,7 @@
 ## [unreleased]
 ### Added
 - Change Log
+- Added development build to deploy script
 
 ### Changed
 - Replaced pong rom with 1 player version

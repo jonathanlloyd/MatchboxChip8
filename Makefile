@@ -1,6 +1,4 @@
 # Makefile for Matchbox CHIP-8
-GH_REF = turingincomplete/MatchboxChip8
-
 all: build
 
 build: clean

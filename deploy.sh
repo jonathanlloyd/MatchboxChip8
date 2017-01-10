@@ -2,15 +2,22 @@
 
 echo "Deploying Matchbox..."
 
-if [ "$TRAVIS_BRANCH" != "" ] && [ "$TRAVIS_BRANCH" != "master" ]
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$GIT_BRANCH" == "master" ]
 then
-  echo "This commit was made against $TRAVIS_BRANCH and not master! No deploy!"
+  GH_REF="turingincomplete/MatchboxChip8"
+elif [ "$GIT_BRANCH" == "development" ]
+then
+  GH_REF="turingincomplete/MatchboxChip8-development"
+else
+  echo "This commit was made against $GIT_BRANCH and not master/development! No deploy!"
   exit 0
 fi
 
 rev=$(git rev-parse --short HEAD)
 
-echo "Deploying build $rev"
+echo "Deploying build $rev to $GH_REF"
 
 cp -r dist deploy
 cd deploy

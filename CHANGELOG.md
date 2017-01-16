@@ -1,6 +1,9 @@
 # Change Log
 
 ## [unreleased]
+
+
+## [v1.1.0] - 16/01/2017
 ### Added
 - Change Log
 - Added development build to deploy script

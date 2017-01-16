@@ -4,6 +4,7 @@
 ### Added
 - Change Log
 - Added development build to deploy script
+- Add "fork-me-on-github" ribbon to demo
 
 ### Changed
 - Replaced pong rom with 1 player version

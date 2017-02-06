@@ -1,6 +1,6 @@
 # Change Log
 
-## [unreleased]
+## [v1.2.0] - 06/02/2017
 ### Added
 - Added keypad mouse support to demo
 

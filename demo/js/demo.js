@@ -50,6 +50,7 @@ var RUNNING = false;
 
 interpreter = new MatchboxChip8.Interpreter(DEBUG);
 
+$( document ).ready(addClickListeners);
 
 function renderScreen(interpreter) {
     for(var x = 0; x < 64; x += 1) {
@@ -85,8 +86,7 @@ window.onkeydown = function(e) {
         if(e.keyCode in KEYCODE_KEY) {
             var key = KEYCODE_KEY[e.keyCode];
             var domKey = KEY_DOMKEY[key];
-            domKey.addClass("demo-key-active");
-            interpreter.keyDown(key);
+            keyPadDown(domKey, key);
         }
     }
 }
@@ -95,8 +95,7 @@ window.onkeyup = function(e) {
     if(e.keyCode in KEYCODE_KEY) {
         var key = KEYCODE_KEY[e.keyCode];
         var domKey = KEY_DOMKEY[key];
-        domKey.removeClass("demo-key-active");
-        interpreter.keyUp(key);
+        keyPadUp(domKey, key);
     }
 }
 
@@ -110,6 +109,29 @@ function loadRomFromURL(URL) {
     });
 }
 
+function addClickListeners() {
+    for(key in KEY_DOMKEY){
+        KEY_DOMKEY[key].mousedown({keyCode: key}, function(e){
+            var domKey = $(e.target);
+            keyPadDown(domKey, e.data.keyCode);
+        });
+
+        KEY_DOMKEY[key].mouseup({keyCode: key}, function(e){
+            var domKey = $(e.target);
+            keyPadUp(domKey, e.data.keyCode);
+        });
+    }
+}
+
+function keyPadDown(domKey, keyCode){
+    domKey.addClass("demo-key-active");
+    interpreter.keyDown(keyCode);
+}
+
+function keyPadUp(domKey, keyCode){
+    domKey.removeClass("demo-key-active");
+    interpreter.keyUp(keyCode);
+}
 
 return {
     "loadRomFromURL": loadRomFromURL,

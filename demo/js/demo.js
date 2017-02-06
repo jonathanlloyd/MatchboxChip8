@@ -112,24 +112,24 @@ function loadRomFromURL(URL) {
 function addClickListeners() {
     for(key in KEY_DOMKEY){
         KEY_DOMKEY[key].mousedown({keyCode: key}, function(e){
-            var domKey = e.target;
+            var domKey = $(e.target);
             keyPadDown(domKey, e.data.keyCode);
         });
 
         KEY_DOMKEY[key].mouseup({keyCode: key}, function(e){
-            var domKey = e.target;
+            var domKey = $(e.target);
             keyPadUp(domKey, e.data.keyCode);
         });
     }
 }
 
 function keyPadDown(domKey, keyCode){
-    $(domKey).addClass("demo-key-active");
+    domKey.addClass("demo-key-active");
     interpreter.keyDown(keyCode);
 }
 
 function keyPadUp(domKey, keyCode){
-    $(domKey).removeClass("demo-key-active");
+    domKey.removeClass("demo-key-active");
     interpreter.keyUp(keyCode);
 }
 

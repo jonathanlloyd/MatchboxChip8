@@ -50,6 +50,7 @@ var RUNNING = false;
 
 interpreter = new MatchboxChip8.Interpreter(DEBUG);
 
+$( document ).ready(addClickListeners);
 
 function renderScreen(interpreter) {
     for(var x = 0; x < 64; x += 1) {
@@ -110,6 +111,25 @@ function loadRomFromURL(URL) {
     });
 }
 
+function addClickListeners() {
+    for(key in KEY_DOMKEY){
+        KEY_DOMKEY[key].mousedown({keyCode: key}, function(e){
+            if(e.data.keyCode in KEY_DOMKEY){
+                var domKey = KEY_DOMKEY[e.data.keyCode];
+                domKey.addClass("demo-key-active");
+                interpreter.keyDown(e.data.keyCode);
+            }
+        });
+
+        KEY_DOMKEY[key].mouseup({keyCode: key}, function(e){
+            if(e.data.keyCode in KEY_DOMKEY){
+                var domKey = KEY_DOMKEY[e.data.keyCode];
+                domKey.removeClass("demo-key-active");
+                interpreter.keyUp(e.data.keyCode);
+            }
+        });
+    }
+}
 
 return {
     "loadRomFromURL": loadRomFromURL,

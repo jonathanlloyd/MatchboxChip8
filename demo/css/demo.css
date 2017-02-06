@@ -52,7 +52,7 @@
   background: #81ce00;
   margin: 0.2em 0.1em;
   padding: 0;
-  cursor: default;
+  cursor: pointer;
   -webkit-user-select: none;  /* Chrome all / Safari all */
   -moz-user-select: none;     /* Firefox all */
   -ms-user-select: none;      /* IE 10+ */

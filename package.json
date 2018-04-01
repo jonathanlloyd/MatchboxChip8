@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/turingincomplete/MatchboxChip8.git"
+    "url": "git+https://github.com/jonathanlloyd/MatchboxChip8.git"
   },
   "author": "Jonathan Lloyd",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/turingincomplete/MatchboxChip8/issues"
+    "url": "https://github.com/jonathanlloyd/MatchboxChip8/issues"
   },
-  "homepage": "https://github.com/turingincomplete/MatchboxChip8#readme",
+  "homepage": "https://github.com/jonathanlloyd/MatchboxChip8#readme",
   "dependencies": {
     "jbinary": "^2.1.3",
     "loglevel": "^1.4.1"

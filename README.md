@@ -1,7 +1,7 @@
 # Matchbox - CHIP-8 Emulator
 A fully compatible emulator for CHIP-8 gaming hardware.
 
-https://turingincomplete.github.io/MatchboxChip8/
+https://jonathanlloyd.github.io/MatchboxChip8/
 
 ## What is CHIP-8?
 https://en.wikipedia.org/wiki/CHIP-8
@@ -13,11 +13,11 @@ https://en.wikipedia.org/wiki/CHIP-8
 ## Build Status
 **Development**
 
-[![Build Status](https://travis-ci.org/turingincomplete/MatchboxChip8.svg?branch=development)](https://travis-ci.org/turingincomplete/MatchboxChip8)
+[![Build Status](https://travis-ci.org/jonathanlloyd/MatchboxChip8.svg?branch=development)](https://travis-ci.org/jonathanlloyd/MatchboxChip8)
 
 **Master**
 
-[![Build Status](https://travis-ci.org/turingincomplete/MatchboxChip8.svg?branch=master)](https://travis-ci.org/turingincomplete/MatchboxChip8)
+[![Build Status](https://travis-ci.org/jonathanlloyd/MatchboxChip8.svg?branch=master)](https://travis-ci.org/jonathanlloyd/MatchboxChip8)
 
 ## Building From Source
 ## Dependencies

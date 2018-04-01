@@ -4,7 +4,9 @@
   "description": "JavaScript Chip-8 Interpreter",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha tests/"
+    "build": "webpack",
+    "lint": "jshint ./src/*",
+    "test": "mocha tests/"
   },
   "repository": {
     "type": "git",
@@ -21,7 +23,10 @@
     "loglevel": "^1.4.1"
   },
   "devDependencies": {
+    "jshint": "^2.9.5",
     "mocha": "^3.1.2",
-    "rewire": "^2.5.2"
+    "rewire": "^2.5.2",
+    "webpack": "^4.4.1",
+    "webpack-cli": "^2.0.13"
   }
 }

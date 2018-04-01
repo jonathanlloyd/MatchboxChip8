@@ -2,7 +2,7 @@
 all: build
 
 build: clean
-	@echo "Building Matchbox..."; cp -r demo dist; webpack
+	@echo "Building Matchbox..."; cp -r demo dist; npm run build
 
 clean:
 	@echo "Cleaning build files..."; rm -rf ./dist
@@ -10,10 +10,10 @@ clean:
 check: test
 
 test:
-	@npm test
+	@npm run test
 
 lint:
-	@jshint ./src/*
+	@npm run lint
 
 deploy: build
 	@GH_REF=$(GH_REF) ./deploy.sh

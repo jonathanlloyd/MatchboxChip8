@@ -12,11 +12,8 @@ fi
 if [ "$GIT_BRANCH" == "master" ]
 then
   GH_REF="jonathanlloyd/MatchboxChip8"
-elif [ "$GIT_BRANCH" == "development" ]
-then
-  GH_REF="jonathanlloyd/MatchboxChip8-development"
 else
-  echo "This commit was made against $GIT_BRANCH and not master/development! No deploy!"
+  echo "This commit was made against $GIT_BRANCH and not master! No deploy!"
   exit 0
 fi
 

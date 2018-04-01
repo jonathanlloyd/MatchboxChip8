@@ -4,7 +4,7 @@ node_js:
 install:
   - "npm install"
 script:
-  - "npm install -g webpack jshint"
+  - "npm install -g webpack-cli jshint"
   - "make lint"
   - "make check"
 after_success:

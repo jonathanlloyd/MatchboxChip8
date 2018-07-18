@@ -24,9 +24,9 @@
   },
   "devDependencies": {
     "jshint": "^2.9.5",
-    "mocha": "^3.1.2",
-    "rewire": "^2.5.2",
-    "webpack": "^4.4.1",
-    "webpack-cli": "^2.0.13"
+    "mocha": "5.*.*",
+    "rewire": "4.*.*",
+    "webpack": "^4.16.1",
+    "webpack-cli": "3.*.*"
   }
 }

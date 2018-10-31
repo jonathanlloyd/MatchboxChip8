@@ -40,6 +40,8 @@ var KEY_DOMKEY = {
     0xf: $("#demoKeyF")
 }
 
+var activeKey = null;
+
 var romURL = "ROMS/PONG";
 
 var backgroundColor = '#112d00';
@@ -112,24 +114,26 @@ function loadRomFromURL(URL) {
 function addClickListeners() {
     for(key in KEY_DOMKEY){
         KEY_DOMKEY[key].mousedown({keyCode: key}, function(e){
-            var domKey = $(e.target);
-            keyPadDown(domKey, e.data.keyCode);
-        });
-
-        KEY_DOMKEY[key].mouseup({keyCode: key}, function(e){
-            var domKey = $(e.target);
-            keyPadUp(domKey, e.data.keyCode);
+            activeKey = e.data.keyCode;
+            keyPadDown(KEY_DOMKEY[e.data.keyCode], e.data.keyCode);
         });
     }
+
+    window.addEventListener("mouseup", function(){
+        if(activeKey){
+            keyPadUp(KEY_DOMKEY[activeKey], activeKey);
+            activeKey = null;
+        }
+    });
 }
 
 function keyPadDown(domKey, keyCode){
-    domKey.addClass("demo-key-active");
+    $(domKey).addClass("demo-key-active");
     interpreter.keyDown(keyCode);
 }
 
 function keyPadUp(domKey, keyCode){
-    domKey.removeClass("demo-key-active");
+    $(domKey).removeClass("demo-key-active");
     interpreter.keyUp(keyCode);
 }
 
